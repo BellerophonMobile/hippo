@@ -10,6 +10,8 @@ import (
 	"math/big"
 )
 
+var AlgorithmECDSA_P256 = "ecdsa-p256"
+
 func init() {
 
 	curves := []ecdsa_t{

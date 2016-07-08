@@ -19,7 +19,7 @@ func Test_ECDSA_03(t *testing.T) {
 	
 	private := PrivateKey{
 		Algorithm: "ecdsa-p256",
-	Private: map[string]interface{} {
+	  Private: map[string]interface{} {
 			"X": "tWkFZSoWKmWbKYAeUu_0VYparnc1KsC_Fi7Hufx6aGU",
 			"Y":  "n_UdGXe2qTC81ttqx4HckQ4oVMA41EcyGlMqrl_GO_g",
 			"D": "s_T7r4eLmb6RxF7jWOaHZUBy3DZ0TSOCrGoipwmU3cI",
@@ -28,7 +28,7 @@ func Test_ECDSA_03(t *testing.T) {
 	
 	public := PublicKey{
 		Algorithm: "ecdsa-p256",
-	Public: map[string]interface{} {
+	  Public: map[string]interface{} {
 			"X": "tWkFZSoWKmWbKYAeUu_0VYparnc1KsC_Fi7Hufx6aGU",
 			"Y":  "n_UdGXe2qTC81ttqx4HckQ4oVMA41EcyGlMqrl_GO_g",
 		},
