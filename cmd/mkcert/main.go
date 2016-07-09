@@ -23,7 +23,38 @@ func (c claims) Set(flag string) error {
 		return fmt.Errorf("Claim format is \"key,value\"")
 	}
 
-	c[v[0][:len(v[0])-1]] = v[1]
+	key := v[0][:len(v[0])-1]
+
+	dec := json.NewDecoder(strings.NewReader(v[1]))
+	dec.UseNumber()
+
+	tok, err := dec.Token()
+	if err != nil {
+		return fmt.Errorf("Invalid claim value format")
+	}
+
+	switch tok := tok.(type) {
+	case bool, string:
+		c[key] = tok
+
+	case json.Number:
+		// First try to decode as int
+		c[key], err = tok.Int64()
+		if err == nil {
+			break
+		}
+		// Next try float
+		c[key], err = tok.Float64()
+		if err == nil {
+			break
+		}
+		// Finally, just store the string value
+		c[key] = tok.String()
+
+	default:
+		return fmt.Errorf("Invalid claim value type")
+	}
+
 	return nil
 }
 
