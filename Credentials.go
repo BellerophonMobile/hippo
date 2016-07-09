@@ -37,6 +37,10 @@ type PublicKey struct {
 	Public interface{}
 }
 
+func (k PublicKey) ToFile(fn string) error {
+	return keyToFile(k, fn)
+}
+
 // PrivateKey is a structure for importing and exporting private
 // keys. Signing is actually done with Credentials.or a Signer.  The
 // format of the data is defined by the algorithm implementation but
@@ -48,6 +52,10 @@ type PrivateKey struct {
 	Private interface{}
 }
 
+func (k PrivateKey) ToFile(fn string) error {
+	return keyToFile(k, fn)
+}
+
 // Signatures are padded Base64 standard encoded strings.
 type Signature string
 
@@ -55,39 +63,33 @@ type Signature string
 // PublicKeyFromFile reads the entirety of the given file and attempts
 // to parse it into a PublicKey.
 func PublicKeyFromFile(fn string) (*PublicKey,error) {
-
-	bits,err := ioutil.ReadFile(fn)
-	if err != nil {
-		return nil,err
-	}
-
 	var key PublicKey
-
-	err = json.Unmarshal(bits, &key)
-	if err != nil {
-		return nil,err
-	}
-
-	return &key,nil
-
+	err := keyFromFile(fn, &key)
+	return &key, err
 }
 
 // PrivateKeyFromFile reads the entirety of the given file and
 // attempts to parse it into a PrivateKey.
 func PrivateKeyFromFile(fn string) (*PrivateKey,error) {
-
-	bits,err := ioutil.ReadFile(fn)
-	if err != nil {
-		return nil,err
-	}
-
 	var key PrivateKey
+	err := keyFromFile(fn, &key)
+	return &key, err
+}
 
-	err = json.Unmarshal(bits, &key)
+func keyFromFile(fn string, key interface{}) error {
+	buf, err := ioutil.ReadFile(fn)
 	if err != nil {
-		return nil,err
+		return err
 	}
 
-	return &key,nil
+	return json.Unmarshal(buf, key)
+}
 
+func keyToFile(key interface{}, fn string) error {
+	buf, err := json.Marshal(key)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(fn, buf, 0644)
 }
