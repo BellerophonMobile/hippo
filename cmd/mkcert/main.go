@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"strings"
 
 	"github.com/BellerophonMobile/hippo"
@@ -14,7 +13,8 @@ import (
 type claims map[string]interface{}
 
 func (c claims) String() string {
-	return "asdf"
+	bytes, _ := json.Marshal(c)
+	return string(bytes)
 }
 
 func (c claims) Set(flag string) error {
@@ -23,7 +23,56 @@ func (c claims) Set(flag string) error {
 		return fmt.Errorf("Claim format is \"key,value\"")
 	}
 
-	c[v[0][:len(v[0])-1]] = v[1]
+	key := v[0][:len(v[0])-1]
+
+	dec := json.NewDecoder(strings.NewReader(v[1]))
+	dec.UseNumber()
+
+	tok, err := dec.Token()
+	if err != nil {
+		return fmt.Errorf("Invalid claim value format")
+	}
+
+	switch tok := tok.(type) {
+	case bool, string:
+		c[key] = tok
+
+	case json.Number:
+		// First try to decode as int
+		c[key], err = tok.Int64()
+		if err == nil {
+			break
+		}
+		// Next try float
+		c[key], err = tok.Float64()
+		if err == nil {
+			break
+		}
+		// Finally, just store the string value
+		c[key] = tok.String()
+
+	default:
+		return fmt.Errorf("Invalid claim value type")
+	}
+
+	return nil
+}
+
+type chain hippo.Chain
+
+func (c *chain) String() string {
+	bytes, _ := json.Marshal(c)
+	return string(bytes)
+}
+
+func (c *chain) Set(flag string) error {
+	cert, err := hippo.CertificateFromFile(flag)
+	if err != nil {
+		return err
+	}
+
+	*c = append(*c, cert.Declarations...)
+
 	return nil
 }
 
@@ -35,10 +84,14 @@ func main() {
 	outFile := flag.String("out", "", "Output certificate.")
 
 	claims := make(claims)
+	var chain chain
 
-	flag.Var(claims, "claim", "Add claim \"key,value\"")
+	flag.Var(claims, "claim", "Add claim \"key,value\".")
+	flag.Var(&chain, "chain", "Add chained certificates.")
 
 	flag.Parse()
+
+	fmt.Printf("Chains: %v\n", chain)
 
 	publicKey := readPublicKey(*publicKeyFile)
 
@@ -48,9 +101,8 @@ func main() {
 	signer := makeSigner(*signingKeyFile)
 	decl := sign(*certId, testament, signer)
 
-	cert := &hippo.Certificate{
-		Declarations: hippo.Chain{decl},
-	}
+	cert := &hippo.Certificate{Declarations: hippo.Chain{decl}}
+	cert.Declarations = append(cert.Declarations, chain...)
 
 	writeCert(cert, *outFile)
 
@@ -97,19 +149,10 @@ func sign(id string, testament *hippo.Testament, signer hippo.Credentials) *hipp
 }
 
 func writeCert(cert *hippo.Certificate, filename string) {
-
 	task := logberry.Main.Task("Write certificate")
-
-	bytes, err := json.Marshal(cert)
-	if err != nil {
-		task.DieFatal("Failed to marshal certificate", err)
-	}
-
-	err = ioutil.WriteFile(filename, bytes, 0644)
+	err := cert.ToFile(filename)
 	if err != nil {
 		task.Fatal(err)
 	}
-
 	task.Success()
-
 }
