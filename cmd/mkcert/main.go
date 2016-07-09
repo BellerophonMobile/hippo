@@ -22,13 +22,11 @@ func (c claims) Set(flag string) error {
 	if len(v) != 2 {
 		return fmt.Errorf("Claim format is \"key,value\"")
 	}
-	c[v[0]] = v[1]
+
+	c[v[0][:len(v[0])-1]] = v[1]
 	return nil
 }
 
-// mkkey generates public and private keys, respectively
-// writing them to files prefix.public and prefix.private, where
-// prefix is an input parameter with default "key".
 func main() {
 	certId := flag.String("certid", "", "Certificate ID.")
 	subjectId := flag.String("subjectid", "", "Subject ID.")
@@ -49,7 +47,13 @@ func main() {
 
 	signer := makeSigner(*signingKeyFile)
 	decl := sign(*certId, testament, signer)
-	writeCert(decl, *outFile)
+
+	cert := &hippo.Certificate{
+		Declarations: hippo.Chain{decl},
+	}
+	
+	writeCert(cert, *outFile)
+
 }
 
 func readPublicKey(filename string) *hippo.PublicKey {
@@ -92,12 +96,13 @@ func sign(id string, testament *hippo.Testament, signer hippo.Credentials) *hipp
 	return decl
 }
 
-func writeCert(decl *hippo.Declaration, filename string) {
+func writeCert(cert *hippo.Certificate, filename string) {
+
 	task := logberry.Main.Task("Write certificate")
 
-	bytes, err := json.Marshal(decl)
+	bytes, err := json.Marshal(cert)
 	if err != nil {
-		task.DieFatal("Failed to marshal declaration", err)
+		task.DieFatal("Failed to marshal certificate", err)
 	}
 
 	err = ioutil.WriteFile(filename, bytes, 0644)
@@ -106,4 +111,5 @@ func writeCert(decl *hippo.Declaration, filename string) {
 	}
 
 	task.Success()
+
 }
