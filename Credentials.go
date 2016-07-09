@@ -1,8 +1,8 @@
 package hippo
 
 import (
-	"io/ioutil"
 	"encoding/json"
+	"io/ioutil"
 )
 
 // Verifier wraps a public key and can verify data.
@@ -13,8 +13,8 @@ type Verifier interface {
 
 // Signer wraps a private key and can sign data.
 type Signer interface {
-	PrivateKey() PrivateKey	
-	Sign(data []byte) (Signature,error)
+	PrivateKey() PrivateKey
+	Sign(data []byte) (Signature, error)
 }
 
 // Credentials contain matched keys to both sign and verify data.
@@ -34,7 +34,7 @@ type Credentials interface {
 // necessary to instantiate a specific class, etc..
 type PublicKey struct {
 	Algorithm string
-	Public interface{}
+	Public    interface{}
 }
 
 func (k PublicKey) ToFile(fn string) error {
@@ -49,7 +49,7 @@ func (k PublicKey) ToFile(fn string) error {
 // necessary to instantiate a specific class, etc..
 type PrivateKey struct {
 	Algorithm string
-	Private interface{}
+	Private   interface{}
 }
 
 func (k PrivateKey) ToFile(fn string) error {
@@ -59,10 +59,9 @@ func (k PrivateKey) ToFile(fn string) error {
 // Signatures are padded Base64 standard encoded strings.
 type Signature string
 
-
 // PublicKeyFromFile reads the entirety of the given file and attempts
 // to parse it into a PublicKey.
-func PublicKeyFromFile(fn string) (*PublicKey,error) {
+func PublicKeyFromFile(fn string) (*PublicKey, error) {
 	var key PublicKey
 	err := keyFromFile(fn, &key)
 	return &key, err
@@ -70,7 +69,7 @@ func PublicKeyFromFile(fn string) (*PublicKey,error) {
 
 // PrivateKeyFromFile reads the entirety of the given file and
 // attempts to parse it into a PrivateKey.
-func PrivateKeyFromFile(fn string) (*PrivateKey,error) {
+func PrivateKeyFromFile(fn string) (*PrivateKey, error) {
 	var key PrivateKey
 	err := keyFromFile(fn, &key)
 	return &key, err

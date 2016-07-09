@@ -51,7 +51,7 @@ func main() {
 	cert := &hippo.Certificate{
 		Declarations: hippo.Chain{decl},
 	}
-	
+
 	writeCert(cert, *outFile)
 
 }

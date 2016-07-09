@@ -2,8 +2,8 @@ package hippo
 
 import (
 	"fmt"
-//	"encoding/base64"
-//	"encoding/json"
+	//	"encoding/base64"
+	//	"encoding/json"
 )
 
 var PreviousVerifier = fmt.Errorf("Verifier exists")
@@ -30,7 +30,7 @@ func NewVerifierPool() *VerifierPool {
 
 func (x VerifierPool) Add(id string, v Verifier) error {
 
-	_,ok := x.verifiers[id]
+	_, ok := x.verifiers[id]
 	if ok {
 		return PreviousVerifier
 	}
@@ -38,7 +38,7 @@ func (x VerifierPool) Add(id string, v Verifier) error {
 	x.verifiers[id] = v
 
 	return nil
-	
+
 }
 
 func (x VerifierPool) VerifySpecific(id string, data []byte, signature Signature) error {
@@ -55,7 +55,7 @@ func (x VerifierPool) VerifySpecific(id string, data []byte, signature Signature
 func (x VerifierPool) VerifyAny(data []byte, signature Signature) error {
 
 	var err error
-	for _,verifier := range(x.verifiers) {
+	for _, verifier := range x.verifiers {
 		err = verifier.Verify(data, signature)
 		if err == nil {
 			return nil
@@ -73,13 +73,13 @@ func (x VerifierPool) VerifyDeclaration(declaration *Declaration) error {
 	}
 
 	return x.VerifySpecific(declaration.Signer, []byte(declaration.Claim), declaration.Signature)
-	
+
 }
 
 func (x VerifierPool) Verify(cert *Certificate) error {
 
 	// If there's no certificate, fail
-	if 	len(cert.Declarations) <= 0 {
+	if len(cert.Declarations) <= 0 {
 		return InvalidCertificate
 	}
 
@@ -96,17 +96,17 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 
 		current := cert.Declarations[index]
 		currtestament, err := UnpackTestament(current.Claim)
-		
+
 		// If that public key does not verify the child claim, fail
 		if currtestament.Subject.ID != prev.Signer {
 			return BrokenCertificateChain
 		}
 
-		v,err := NewVerifier(currtestament.Subject.PublicKey)
+		v, err := NewVerifier(currtestament.Subject.PublicKey)
 		if err != nil {
 			return err
 		}
-		
+
 		err = v.Verify([]byte(prev.Claim), prev.Signature)
 		if err != nil {
 			return err
@@ -117,7 +117,7 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 		if err == nil {
 			return nil
 		}
-		
+
 		prev = current
 	}
 

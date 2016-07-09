@@ -12,7 +12,7 @@ func Test_Ed25519_02(t *testing.T) {
 
 	public := PublicKey{
 		Algorithm: "ed25519",
-		Public: "40-exa2J4941Nn7eZS4R-uGqcXSMu3ye69s2xgAPyMg=",
+		Public:    "40-exa2J4941Nn7eZS4R-uGqcXSMu3ye69s2xgAPyMg=",
 	}
 
 	signature := Signature("IVv3qM+gPCZdDccKoWLNNLN2Ycafg/0g9mB6G212XkPBNtlgCpHGr4LukNhooBIX9VZueyUnr4PqH8crnDwRBw==")

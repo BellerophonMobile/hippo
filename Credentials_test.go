@@ -1,26 +1,26 @@
 package hippo
 
 import (
-	"fmt"
-	"testing"
-	"github.com/stretchr/testify/require"
 	"encoding/json"
+	"fmt"
+	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func test_basic(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
-	sender,err := Generate(algorithm)
+	sender, err := Generate(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 
-	signature,err := sender.Sign(data)
+	signature, err := sender.Sign(data)
 	require.Nil(t, err)
 	require.NotEmpty(t, signature)
 
-	public := sender.PublicKey()	
-	receiver,err := NewVerifier(public)
+	public := sender.PublicKey()
+	receiver, err := NewVerifier(public)
 	require.Nil(t, err)
 	require.NotNil(t, receiver)
 
@@ -34,10 +34,10 @@ func test_basic(t *testing.T, algorithm string) {
 
 func test_signed(t *testing.T, public PublicKey, data []byte, signature Signature) {
 
-	verifier,err := NewVerifier(public)
+	verifier, err := NewVerifier(public)
 	require.Nil(t, err)
 	require.NotNil(t, verifier)
-	
+
 	err = verifier.Verify(data, signature)
 	require.Nil(t, err)
 
@@ -47,35 +47,34 @@ func test_json(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
-	sender,err := Generate(algorithm)
+	sender, err := Generate(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 
-	publicjson,err := json.Marshal(sender.PublicKey())
-	require.Nil(t, err)	
+	publicjson, err := json.Marshal(sender.PublicKey())
+	require.Nil(t, err)
 	t.Log("Public Key", string(publicjson))
 
-
-	signature,err := sender.Sign(data)
+	signature, err := sender.Sign(data)
 	require.Nil(t, err)
 
 	/*
 	 signaturejson,err := json.Marshal(signature)
-	 require.Nil(t, err)	
+	 require.Nil(t, err)
 	 t.Log("Signature", string(signaturejson))
-	 */
-	
+	*/
+
 	public := PublicKey{}
 	err = json.Unmarshal(publicjson, &public)
-	require.Nil(t, err)		
+	require.Nil(t, err)
 
 	/*
 	 signature = &Signature{}
 	 err = json.Unmarshal(signaturejson, signature)
-	 require.Nil(t, err)		
-	 */
-	
-	receiver,err := NewVerifier(public)
+	 require.Nil(t, err)
+	*/
+
+	receiver, err := NewVerifier(public)
 	require.Nil(t, err)
 	require.NotNil(t, receiver)
 
