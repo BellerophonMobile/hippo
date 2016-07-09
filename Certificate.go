@@ -30,6 +30,16 @@ type Certificate struct {
 	Declarations Chain
 }
 
+func CertificateFromFile(fn string) (*Certificate, error) {
+	var cert Certificate
+	err := fromFile(fn, &cert)
+	return &cert, err
+}
+
+func (c *Certificate) ToFile(fn string) error {
+	return toFile(c, fn)
+}
+
 func NewTestament(subjectID string, subjectkey PublicKey) *Testament {
 
 	x := new(Testament)

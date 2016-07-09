@@ -1,10 +1,5 @@
 package hippo
 
-import (
-	"encoding/json"
-	"io/ioutil"
-)
-
 // Verifier wraps a public key and can verify data.
 type Verifier interface {
 	PublicKey() PublicKey
@@ -38,7 +33,7 @@ type PublicKey struct {
 }
 
 func (k PublicKey) ToFile(fn string) error {
-	return keyToFile(k, fn)
+	return toFile(k, fn)
 }
 
 // PrivateKey is a structure for importing and exporting private
@@ -53,17 +48,18 @@ type PrivateKey struct {
 }
 
 func (k PrivateKey) ToFile(fn string) error {
-	return keyToFile(k, fn)
+	return toFile(k, fn)
 }
 
 // Signatures are padded Base64 standard encoded strings.
 type Signature string
 
+
 // PublicKeyFromFile reads the entirety of the given file and attempts
 // to parse it into a PublicKey.
 func PublicKeyFromFile(fn string) (*PublicKey, error) {
 	var key PublicKey
-	err := keyFromFile(fn, &key)
+	err := fromFile(fn, &key)
 	return &key, err
 }
 
@@ -71,24 +67,6 @@ func PublicKeyFromFile(fn string) (*PublicKey, error) {
 // attempts to parse it into a PrivateKey.
 func PrivateKeyFromFile(fn string) (*PrivateKey, error) {
 	var key PrivateKey
-	err := keyFromFile(fn, &key)
+	err := fromFile(fn, &key)
 	return &key, err
-}
-
-func keyFromFile(fn string, key interface{}) error {
-	buf, err := ioutil.ReadFile(fn)
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(buf, key)
-}
-
-func keyToFile(key interface{}, fn string) error {
-	buf, err := json.Marshal(key)
-	if err != nil {
-		return err
-	}
-
-	return ioutil.WriteFile(fn, buf, 0644)
 }

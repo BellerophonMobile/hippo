@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"strings"
 
 	"github.com/BellerophonMobile/hippo"
@@ -14,7 +13,8 @@ import (
 type claims map[string]interface{}
 
 func (c claims) String() string {
-	return "asdf"
+	bytes, _ := json.Marshal(c)
+	return string(bytes)
 }
 
 func (c claims) Set(flag string) error {
@@ -128,19 +128,10 @@ func sign(id string, testament *hippo.Testament, signer hippo.Credentials) *hipp
 }
 
 func writeCert(cert *hippo.Certificate, filename string) {
-
 	task := logberry.Main.Task("Write certificate")
-
-	bytes, err := json.Marshal(cert)
-	if err != nil {
-		task.DieFatal("Failed to marshal certificate", err)
-	}
-
-	err = ioutil.WriteFile(filename, bytes, 0644)
+	err := cert.ToFile(filename)
 	if err != nil {
 		task.Fatal(err)
 	}
-
 	task.Success()
-
 }
