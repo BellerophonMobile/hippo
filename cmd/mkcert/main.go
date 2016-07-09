@@ -58,6 +58,24 @@ func (c claims) Set(flag string) error {
 	return nil
 }
 
+type chain hippo.Chain
+
+func (c *chain) String() string {
+	bytes, _ := json.Marshal(c)
+	return string(bytes)
+}
+
+func (c *chain) Set(flag string) error {
+	cert, err := hippo.CertificateFromFile(flag)
+	if err != nil {
+		return err
+	}
+
+	*c = append(*c, cert.Declarations...)
+
+	return nil
+}
+
 func main() {
 	certId := flag.String("certid", "", "Certificate ID.")
 	subjectId := flag.String("subjectid", "", "Subject ID.")
@@ -66,10 +84,14 @@ func main() {
 	outFile := flag.String("out", "", "Output certificate.")
 
 	claims := make(claims)
+	var chain chain
 
-	flag.Var(claims, "claim", "Add claim \"key,value\"")
+	flag.Var(claims, "claim", "Add claim \"key,value\".")
+	flag.Var(&chain, "chain", "Add chained certificates.")
 
 	flag.Parse()
+
+	fmt.Printf("Chains: %v\n", chain)
 
 	publicKey := readPublicKey(*publicKeyFile)
 
@@ -79,9 +101,8 @@ func main() {
 	signer := makeSigner(*signingKeyFile)
 	decl := sign(*certId, testament, signer)
 
-	cert := &hippo.Certificate{
-		Declarations: hippo.Chain{decl},
-	}
+	cert := &hippo.Certificate{Declarations: hippo.Chain{decl}}
+	cert.Declarations = append(cert.Declarations, chain...)
 
 	writeCert(cert, *outFile)
 
