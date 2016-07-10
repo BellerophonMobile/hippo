@@ -91,8 +91,6 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Printf("Chains: %v\n", chain)
-
 	publicKey := readPublicKey(*publicKeyFile)
 
 	testament := hippo.NewTestament(*subjectId, *publicKey)
@@ -105,7 +103,6 @@ func main() {
 	cert.Declarations = append(cert.Declarations, chain...)
 
 	writeCert(cert, *outFile)
-
 }
 
 func readPublicKey(filename string) *hippo.PublicKey {
