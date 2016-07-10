@@ -10,7 +10,7 @@ import (
 	"github.com/BellerophonMobile/logberry"
 )
 
-type claims map[string]interface{}
+type claims hippo.Claims
 
 func (c claims) String() string {
 	bytes, _ := json.Marshal(c)
@@ -93,8 +93,7 @@ func main() {
 
 	publicKey := readPublicKey(*publicKeyFile)
 
-	testament := hippo.NewTestament(*subjectId, *publicKey)
-	testament.Claims = claims
+	testament := hippo.NewTestament(*subjectId, *publicKey, hippo.Claims(claims))
 
 	signer := makeSigner(*signingKeyFile)
 	decl := sign(*certId, testament, signer)
