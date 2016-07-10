@@ -3,6 +3,7 @@ package hippo
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 )
 
 type Subject struct {
@@ -14,10 +15,12 @@ type Testament struct {
 	ID string
 
 	Subject Subject
-	Claims  map[string]interface{}
+	Claims  Claims
 
 	Expires string
 }
+
+type Claims map[string]interface{}
 
 type Declaration struct {
 	Claim     string
@@ -31,20 +34,59 @@ type Certificate struct {
 }
 
 func CertificateFromFile(fn string) (*Certificate, error) {
+
 	var cert Certificate
+
 	err := fromFile(fn, &cert)
-	return &cert, err
+	if err != nil {
+		return nil,err
+	}
+	
+	return IsValidCertificate(&cert)
+
+}
+
+func CertificateFromBytes(buf []byte) (*Certificate, error) {
+
+	var cert Certificate
+
+	err := fromBytes(buf, &cert)
+	if err != nil {
+		return nil, err
+	}
+	
+	return IsValidCertificate(&cert)
+
+}
+
+func IsValidCertificate(cert *Certificate) (*Certificate,error) {
+
+	if len(cert.Declarations) <= 0 {
+		return nil,fmt.Errorf("No declarations in certificate")
+	}
+
+	return cert,nil
+
 }
 
 func (c *Certificate) ToFile(fn string) error {
 	return toFile(c, fn)
 }
 
-func NewTestament(subjectID string, subjectkey PublicKey) *Testament {
+
+func NewTestament(subjectID string, subjectkey PublicKey, claims Claims) *Testament {
 
 	x := new(Testament)
+
 	x.Subject.ID = subjectID
+
 	x.Subject.PublicKey = subjectkey
+
+	if claims == nil {
+		x.Claims = make(Claims)
+	} else {
+		x.Claims = claims
+	}
 
 	return x
 

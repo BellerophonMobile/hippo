@@ -15,6 +15,8 @@ var UnverifiedCertificate = fmt.Errorf("Unrecognized certificate")
 
 var BrokenCertificateChain = fmt.Errorf("Broken certificate chain")
 
+var NotCertificateAuthority = fmt.Errorf("Chained declaration does not confirm certificate authority")
+
 type VerifierPool struct {
 	verifiers map[string]Verifier
 }
@@ -97,7 +99,22 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 		current := cert.Declarations[index]
 		currtestament, err := UnpackTestament(current.Claim)
 
-		// If that public key does not verify the child claim, fail
+		// If a chained declaration is not for a certificate authority, fail
+		val,ok := currtestament.Claims["CertificateAuthority"]
+		if !ok {
+			return NotCertificateAuthority
+		}
+
+		switch t := val.(type) {
+		case bool:
+			if !t {
+				return NotCertificateAuthority
+			}
+		default:
+			return NotCertificateAuthority
+		}
+		
+		// If the public key does not link to the preceding declaration, fail
 		if currtestament.Subject.ID != prev.Signer {
 			return BrokenCertificateChain
 		}
