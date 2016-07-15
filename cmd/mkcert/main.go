@@ -30,7 +30,7 @@ func (c claims) Set(flag string) error {
 
 	tok, err := dec.Token()
 	if err != nil {
-		return fmt.Errorf("Invalid claim value format")
+		return fmt.Errorf("Invalid claim value format: ", err)
 	}
 
 	switch tok := tok.(type) {
