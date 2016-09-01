@@ -73,6 +73,10 @@ func (c *Certificate) ToFile(fn string) error {
 	return toFile(c, fn)
 }
 
+func (c *Certificate) ToBytes() ([]byte, error) {
+	return toBytes(c)
+}
+
 func NewTestament(subjectID string, subjectkey PublicKey, claims Claims) *Testament {
 
 	x := new(Testament)
