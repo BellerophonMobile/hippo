@@ -196,9 +196,9 @@ func (x *ECDSACredentials) SetPublicKey(publickey PublicKey) error {
 	xy.SetBytes(b)
 
 	x.Public = &ecdsa.PublicKey{
-		x.Curve,
-		&xx,
-		&xy,
+		Curve: x.Curve,
+		X:     &xx,
+		Y:     &xy,
 	}
 
 	return nil
@@ -309,12 +309,12 @@ func (x *ECDSACredentials) SetPrivateKey(privatekey PrivateKey) error {
 	xd.SetBytes(b)
 
 	x.Private = &ecdsa.PrivateKey{
-		ecdsa.PublicKey{
-			x.Curve,
-			&xx,
-			&xy,
+		PublicKey: ecdsa.PublicKey{
+			Curve: x.Curve,
+			X:     &xx,
+			Y:     &xy,
 		},
-		&xd,
+		D: &xd,
 	}
 
 	return nil
