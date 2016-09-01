@@ -18,7 +18,6 @@ func fromBytes(buf []byte, key interface{}) error {
 	return json.Unmarshal(buf, key)
 }
 
-
 func toFile(key interface{}, fn string) error {
 	buf, err := toBytes(key)
 	if err != nil {
@@ -28,8 +27,6 @@ func toFile(key interface{}, fn string) error {
 	return ioutil.WriteFile(fn, buf, 0644)
 }
 
-func toBytes(key interface{}) ([]byte,error) {
-	return json.Marshal(key)	
+func toBytes(key interface{}) ([]byte, error) {
+	return json.Marshal(key)
 }
-
-

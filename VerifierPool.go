@@ -100,7 +100,7 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 		currtestament, err := UnpackTestament(current.Claim)
 
 		// If a chained declaration is not for a certificate authority, fail
-		val,ok := currtestament.Claims["CertificateAuthority"]
+		val, ok := currtestament.Claims["CertificateAuthority"]
 		if !ok {
 			return NotCertificateAuthority
 		}
@@ -113,7 +113,7 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 		default:
 			return NotCertificateAuthority
 		}
-		
+
 		// If the public key does not link to the preceding declaration, fail
 		if currtestament.Subject.ID != prev.Signer {
 			return BrokenCertificateChain

@@ -39,9 +39,9 @@ func CertificateFromFile(fn string) (*Certificate, error) {
 
 	err := fromFile(fn, &cert)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	
+
 	return IsValidCertificate(&cert)
 
 }
@@ -54,25 +54,24 @@ func CertificateFromBytes(buf []byte) (*Certificate, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return IsValidCertificate(&cert)
 
 }
 
-func IsValidCertificate(cert *Certificate) (*Certificate,error) {
+func IsValidCertificate(cert *Certificate) (*Certificate, error) {
 
 	if len(cert.Declarations) <= 0 {
-		return nil,fmt.Errorf("No declarations in certificate")
+		return nil, fmt.Errorf("No declarations in certificate")
 	}
 
-	return cert,nil
+	return cert, nil
 
 }
 
 func (c *Certificate) ToFile(fn string) error {
 	return toFile(c, fn)
 }
-
 
 func NewTestament(subjectID string, subjectkey PublicKey, claims Claims) *Testament {
 

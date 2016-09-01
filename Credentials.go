@@ -54,7 +54,6 @@ func (k PrivateKey) ToFile(fn string) error {
 // Signatures are padded Base64 standard encoded strings.
 type Signature string
 
-
 // PublicKeyFromFile reads the entirety of the given file and attempts
 // to parse it into a PublicKey.
 func PublicKeyFromFile(fn string) (*PublicKey, error) {
