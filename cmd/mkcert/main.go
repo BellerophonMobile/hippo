@@ -77,6 +77,8 @@ func (c *chain) Set(flag string) error {
 }
 
 func main() {
+	defer logberry.Std.Stop()
+
 	certId := flag.String("certid", "", "Certificate ID.")
 	subjectId := flag.String("subjectid", "", "Subject ID.")
 	publicKeyFile := flag.String("subjectkey", "", "Subject public key.")
@@ -91,64 +93,84 @@ func main() {
 
 	flag.Parse()
 
-	publicKey := readPublicKey(*publicKeyFile)
-
+	publicKey,err := readPublicKey(*publicKeyFile)
+	if err != nil {
+		return
+	}
+	
 	testament := hippo.NewTestament(*subjectId, *publicKey, hippo.Claims(claims))
 
-	signer := makeSigner(*signingKeyFile)
-	decl := sign(*certId, testament, signer)
+	signer,err := makeSigner(*signingKeyFile)
+	if err != nil {
+		return
+	}
+
+	decl,err := sign(*certId, testament, signer)
+	if err != nil {
+		return
+	}
 
 	cert := &hippo.Certificate{Declarations: hippo.Chain{decl}}
 	cert.Declarations = append(cert.Declarations, chain...)
 
 	writeCert(cert, *outFile)
+	if err != nil {
+		return
+	}
+
 }
 
-func readPublicKey(filename string) *hippo.PublicKey {
+func readPublicKey(filename string) (*hippo.PublicKey,error) {
 	task := logberry.Main.Task("Read public key", logberry.D{"filename": filename})
 	key, err := hippo.PublicKeyFromFile(filename)
 	if err != nil {
-		task.Fatal(err)
+		return nil,task.Error(err)
 	}
-	task.Success()
-	return key
+	
+	return key,task.Success()
 }
 
-func readPrivateKey(filename string) *hippo.PrivateKey {
+func readPrivateKey(filename string) (*hippo.PrivateKey,error) {
 	task := logberry.Main.Task("Read private key", logberry.D{"filename": filename})
 	key, err := hippo.PrivateKeyFromFile(filename)
 	if err != nil {
-		task.Fatal(err)
+		return nil,task.Error(err)
 	}
-	task.Success()
-	return key
+	
+	return key,task.Success()
 }
 
-func makeSigner(filename string) hippo.Credentials {
+func makeSigner(filename string) (hippo.Credentials,error) {
 	task := logberry.Main.Task("Load signer", logberry.D{"filename": filename})
-	credentials, err := hippo.NewSigner(*readPrivateKey(filename))
+
+	privkey,err := readPrivateKey(filename)
 	if err != nil {
-		task.Fatal(err)
+		return nil,task.Error(err)
 	}
-	task.Success()
-	return credentials
+
+	credentials, err := hippo.NewSigner(*privkey)
+	if err != nil {
+		return nil,task.Error(err)
+	}
+	
+	return credentials,task.Success()
 }
 
-func sign(id string, testament *hippo.Testament, signer hippo.Credentials) *hippo.Declaration {
+func sign(id string, testament *hippo.Testament, signer hippo.Credentials) (*hippo.Declaration,error) {
 	task := logberry.Main.Task("Sign certificate", logberry.D{"id": id})
 	decl, err := testament.Sign(id, signer)
 	if err != nil {
-		task.Fatal(err)
+		return nil,task.Error(err)
 	}
-	task.Success()
-	return decl
+	
+	return decl,task.Success()
 }
 
-func writeCert(cert *hippo.Certificate, filename string) {
+func writeCert(cert *hippo.Certificate, filename string) error {
 	task := logberry.Main.Task("Write certificate")
 	err := cert.ToFile(filename)
 	if err != nil {
-		task.Fatal(err)
+		return task.Error(err)
 	}
-	task.Success()
+	return task.Success()
 }

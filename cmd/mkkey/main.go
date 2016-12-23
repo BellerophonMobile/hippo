@@ -16,22 +16,26 @@ func main() {
 
 	flag.Parse()
 
-	keys := generateKeys(*algorithm)
+	keys,err := generateKeys(*algorithm)
+	if err != nil {
+		return
+	}
+	
 	writeKeys(keys, *prefix)
 }
 
-func generateKeys(algorithm string) hippo.Credentials {
+func generateKeys(algorithm string) (hippo.Credentials,error) {
 	task := logberry.Main.Task("Generate keys")
+
 	keys, err := hippo.Generate(algorithm)
 	if err != nil {
-		task.Fatal(err)
+		return nil,task.Error(err)
 	}
-	task.Success()
 
-	return keys
+	return keys,task.Success()
 }
 
-func writeKeys(keys hippo.Credentials, prefix string) {
+func writeKeys(keys hippo.Credentials, prefix string) error {
 	var err error
 
 	publicFile := prefix + ".public"
@@ -44,13 +48,13 @@ func writeKeys(keys hippo.Credentials, prefix string) {
 
 	err = keys.PublicKey().ToFile(publicFile)
 	if err != nil {
-		task.DieFatal("Failed to write public key", err)
+		return task.WrapError("Failed to write public key", err)
 	}
 
 	err = keys.PrivateKey().ToFile(privateFile)
 	if err != nil {
-		task.DieFatal("Failed to write private key", err)
+		return task.WrapError("Failed to write private key", err)
 	}
 
-	task.Success()
+	return task.Success()
 }
