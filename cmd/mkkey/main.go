@@ -11,6 +11,8 @@ import (
 // writing them to files prefix.public and prefix.private, where
 // prefix is an input parameter with default "key".
 func main() {
+	defer logberry.Std.Stop()
+	
 	algorithm := flag.String("algorithm", "ed25519", "Algorithm to use.")
 	prefix := flag.String("prefix", "key", "Key filename prefix to use.")
 
