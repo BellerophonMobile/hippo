@@ -365,7 +365,7 @@ func Test_Certificate_06(t *testing.T) {
 	ca2, err := Generate(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca2)
-	
+
 	root, err := Generate(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
@@ -431,7 +431,7 @@ func Test_Certificate_06a(t *testing.T) {
 	ca2, err := Generate(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca2)
-	
+
 	root, err := Generate(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
@@ -439,7 +439,7 @@ func Test_Certificate_06a(t *testing.T) {
 	bogus, err := Generate(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
-	
+
 	// Root makes a certificate for CA1
 	ca1_id := NewTestament("ca1", ca1.PublicKey(), Claims{"CertificateAuthority": true})
 	require.NotNil(t, ca1_id)

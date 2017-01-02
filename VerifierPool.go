@@ -91,7 +91,6 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 		return nil
 	}
 
-	
 	prev := cert.Declarations[0]
 
 	for index := 1; index < len(cert.Declarations); index++ {
