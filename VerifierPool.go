@@ -91,10 +91,10 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 		return nil
 	}
 
-	index := 1
+	
 	prev := cert.Declarations[0]
 
-	for index < len(cert.Declarations) {
+	for index := 1; index < len(cert.Declarations); index++ {
 
 		current := cert.Declarations[index]
 		currtestament, err := UnpackTestament(current.Claim)
@@ -116,6 +116,7 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 
 		// If the public key does not link to the preceding declaration, fail
 		if currtestament.Subject.ID != prev.Signer {
+			fmt.Println(currtestament.Subject.ID, " vs ", prev.Signer)
 			return BrokenCertificateChain
 		}
 
