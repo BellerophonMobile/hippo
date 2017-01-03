@@ -3,8 +3,9 @@ package hippo
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 // test_basic is a test utility function to generate credentials using

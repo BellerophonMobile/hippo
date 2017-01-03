@@ -1,8 +1,9 @@
 package hippo
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 // Test_ECDSA_01: Generate credentials then sign & verify data.

@@ -5,8 +5,8 @@ install:
  - go get github.com/stretchr/testify/require
  - go get github.com/agl/ed25519
  - go get github.com/BellerophonMobile/logberry
-  
+
 script:
  - go test -v .
- - go build cmd/mkkey/main.go 
+ - go build cmd/mkkey/main.go
  - go build cmd/mkcert/main.go

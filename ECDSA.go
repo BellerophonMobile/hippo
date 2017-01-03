@@ -10,18 +10,23 @@ import (
 	"math/big"
 )
 
-var AlgorithmECDSA_P256 = "ecdsa-p256"
+// AlgorithmECDSA_P256 is a constant string identifying the ECDSA algorithm
+// using the P-256 curve.
+const AlgorithmECDSA_P256 = "ecdsa-p256"
 
 func init() {
 
 	curves := []ecdsa_t{
-		ecdsa_t{
+		{
 			label: "p256",
 			curve: elliptic.P256(),
 		},
 	}
 	for _, c := range curves {
-		Register(&c)
+		err := Register(&c)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }
@@ -56,7 +61,7 @@ func (x *ecdsa_t) Generate() (Credentials, error) {
 
 }
 
-// New creates wraps the given keys as Credentials.
+// New wraps the given keys as Credentials.
 func (x *ecdsa_t) New(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	var credentials ECDSACredentials
