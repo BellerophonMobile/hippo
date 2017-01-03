@@ -18,10 +18,13 @@ type ed25519_t struct {
 
 var ed25519_v ed25519_t
 
+// Algorithm returns the label identifying the algorithm and
+// parameterization of this credentialier.
 func (x *ed25519_t) Algorithm() string {
 	return AlgorithmEd25519
 }
 
+// Generate creates a new set of Credentials.
 func (x *ed25519_t) Generate() (Credentials, error) {
 
 	var credentials Ed25519Credentials
@@ -36,6 +39,7 @@ func (x *ed25519_t) Generate() (Credentials, error) {
 
 }
 
+// New creates wraps the given keys as Credentials.
 func (x *ed25519_t) New(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	var credentials Ed25519Credentials
@@ -55,6 +59,7 @@ func (x *ed25519_t) New(public PublicKey, private PrivateKey) (Credentials, erro
 
 }
 
+// NewVerifier wraps the given PublicKey as Credentials.
 func (x *ed25519_t) NewVerifier(key PublicKey) (Credentials, error) {
 
 	var credentials Ed25519Credentials
@@ -69,6 +74,7 @@ func (x *ed25519_t) NewVerifier(key PublicKey) (Credentials, error) {
 
 }
 
+// NewSigner wraps the given PublicKey as Credentials.
 func (x *ed25519_t) NewSigner(key PrivateKey) (Credentials, error) {
 
 	var credentials Ed25519Credentials
@@ -83,20 +89,35 @@ func (x *ed25519_t) NewSigner(key PrivateKey) (Credentials, error) {
 
 }
 
+// Ed25519Credentials are an actionable Ed25519 public/private key or
+// matched pair.
 type Ed25519Credentials struct {
 	Private *[ed25519.PrivateKeySize]byte
 	Public  *[ed25519.PublicKeySize]byte
 }
 
+// PublicKey returns a JSON Base64-URL encoded marshaling of the
+// credential's public key.
+func (x *Ed25519Credentials) PublicKey() PublicKey {
+
+	return PublicKey{
+		Algorithm: AlgorithmEd25519,
+		Public:    base64.URLEncoding.EncodeToString(x.Public[:]),
+	}
+
+}
+
+// SetPublicKey sets the credential's public key from the given
+// PublicKey containing JSON Base64-URL encoded data.
 func (x *Ed25519Credentials) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != AlgorithmEd25519 {
-		return AlgorithmMismatch
+		return ErrAlgorithmMismatch
 	}
 
 	st, ok := publickey.Public.(string)
 	if !ok {
-		return InvalidPublicKeyType
+		return ErrInvalidPublicKeyType
 	}
 
 	if len(st) != base64.URLEncoding.EncodedLen(ed25519.PublicKeySize) {
@@ -116,15 +137,17 @@ func (x *Ed25519Credentials) SetPublicKey(publickey PublicKey) error {
 
 }
 
+// SetPrivateKey sets the credential's public key from the given
+// PrivateKey containing JSON Base64-URL encoded data.
 func (x *Ed25519Credentials) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != AlgorithmEd25519 {
-		return AlgorithmMismatch
+		return ErrAlgorithmMismatch
 	}
 
 	st, ok := privatekey.Private.(string)
 	if !ok {
-		return InvalidPrivateKeyType
+		return ErrInvalidPrivateKeyType
 	}
 
 	if len(st) != base64.URLEncoding.EncodedLen(ed25519.PrivateKeySize) {
@@ -144,15 +167,8 @@ func (x *Ed25519Credentials) SetPrivateKey(privatekey PrivateKey) error {
 
 }
 
-func (x *Ed25519Credentials) PublicKey() PublicKey {
-
-	return PublicKey{
-		Algorithm: AlgorithmEd25519,
-		Public:    base64.URLEncoding.EncodeToString(x.Public[:]),
-	}
-
-}
-
+// PrivateKey returns a JSON Base64-URL encoded marshaling of the
+// credential's private key.
 func (x *Ed25519Credentials) PrivateKey() PrivateKey {
 
 	return PrivateKey{
@@ -162,10 +178,11 @@ func (x *Ed25519Credentials) PrivateKey() PrivateKey {
 
 }
 
+// Sign produces a signature for the given data.
 func (x *Ed25519Credentials) Sign(data []byte) (Signature, error) {
 
 	if x.Private == nil || len(x.Private) < ed25519.PrivateKeySize {
-		return "", NotSigner
+		return "", ErrNotSigner
 	}
 
 	sig := ed25519.Sign(x.Private, data)
@@ -175,14 +192,10 @@ func (x *Ed25519Credentials) Sign(data []byte) (Signature, error) {
 
 }
 
+// Verify confirms that the given signature was produced from the
+// given data using the private key associated with this credential's
+// public key.
 func (x *Ed25519Credentials) Verify(data []byte, signature Signature) error {
-
-	/*
-		st,ok := signature.Signature.(string)
-		if !ok {
-			return InvalidSignatureType
-		}
-	*/
 
 	if len(signature) != base64.StdEncoding.EncodedLen(ed25519.SignatureSize) {
 		return fmt.Errorf("Signature incorrect length")
@@ -197,7 +210,7 @@ func (x *Ed25519Credentials) Verify(data []byte, signature Signature) error {
 	copy(sig[:], bytes)
 
 	if !ed25519.Verify(x.Public, data, &sig) {
-		return UnverifiedSignature
+		return ErrUnverifiedSignature
 	}
 
 	return nil

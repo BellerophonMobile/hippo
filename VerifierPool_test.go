@@ -96,10 +96,10 @@ func Test_Pool_03(t *testing.T) {
 
 	err = pool.VerifySpecific("crabapple", data, signature)
 	require.NotNil(t, err)
-	require.Equal(t, NoVerifier, err)
+	require.Equal(t, ErrNoVerifier, err)
 
 	err = pool.VerifySpecific("foo", data, signature)
 	require.NotNil(t, err)
-	require.Equal(t, UnverifiedSignature, err)
+	require.Equal(t, ErrUnverifiedSignature, err)
 
 }

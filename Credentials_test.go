@@ -59,7 +59,7 @@ func test_bogus(t *testing.T, algorithm string) {
 
 	err = receiver.Verify(data, signature)
 	require.NotNil(t, err)
-	require.Equal(t, UnverifiedSignature, err)
+	require.Equal(t, ErrUnverifiedSignature, err)
 
 }
 

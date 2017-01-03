@@ -31,10 +31,13 @@ type ecdsa_t struct {
 	curve elliptic.Curve
 }
 
+// Algorithm returns the label identifying the algorithm and
+// parameterization of this credentialier.
 func (x *ecdsa_t) Algorithm() string {
 	return "ecdsa-" + x.label
 }
 
+// Generate creates a new set of Credentials.
 func (x *ecdsa_t) Generate() (Credentials, error) {
 
 	var credentials ECDSACredentials
@@ -53,6 +56,7 @@ func (x *ecdsa_t) Generate() (Credentials, error) {
 
 }
 
+// New creates wraps the given keys as Credentials.
 func (x *ecdsa_t) New(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	var credentials ECDSACredentials
@@ -75,6 +79,7 @@ func (x *ecdsa_t) New(public PublicKey, private PrivateKey) (Credentials, error)
 
 }
 
+// NewVerifier wraps the given PublicKey as Credentials.
 func (x *ecdsa_t) NewVerifier(key PublicKey) (Credentials, error) {
 
 	var credentials ECDSACredentials
@@ -92,6 +97,7 @@ func (x *ecdsa_t) NewVerifier(key PublicKey) (Credentials, error) {
 
 }
 
+// NewSigner wraps the given PublicKey as Credentials.
 func (x *ecdsa_t) NewSigner(key PrivateKey) (Credentials, error) {
 
 	var credentials ECDSACredentials
@@ -109,6 +115,8 @@ func (x *ecdsa_t) NewSigner(key PrivateKey) (Credentials, error) {
 
 }
 
+// ECDSACredentials are an actionable ECDSA public/private key or
+// matched pair.
 type ECDSACredentials struct {
 	Algorithm string
 	Curve     elliptic.Curve
@@ -116,6 +124,8 @@ type ECDSACredentials struct {
 	Private   *ecdsa.PrivateKey
 }
 
+// PublicKey returns a JSON Base64-URL encoded marshaling of the
+// credential's public key.
 func (x *ECDSACredentials) PublicKey() PublicKey {
 
 	bitlen := x.Curve.Params().BitSize / 8
@@ -138,10 +148,12 @@ func (x *ECDSACredentials) PublicKey() PublicKey {
 
 }
 
+// SetPublicKey sets the credential's public key from the given
+// PublicKey containing JSON Base64-URL encoded data.
 func (x *ECDSACredentials) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != x.Algorithm {
-		return AlgorithmMismatch
+		return ErrAlgorithmMismatch
 	}
 
 	bitlen := x.Curve.Params().BitSize / 8
@@ -205,6 +217,8 @@ func (x *ECDSACredentials) SetPublicKey(publickey PublicKey) error {
 
 }
 
+// PrivateKey returns a JSON Base64-URL encoded marshaling of the
+// credential's private key.
 func (x *ECDSACredentials) PrivateKey() PrivateKey {
 
 	bitlen := x.Curve.Params().BitSize / 8
@@ -232,10 +246,12 @@ func (x *ECDSACredentials) PrivateKey() PrivateKey {
 
 }
 
+// SetPrivateKey sets the credential's public key from the given
+// PrivateKey containing JSON Base64-URL encoded data.
 func (x *ECDSACredentials) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != x.Algorithm {
-		return AlgorithmMismatch
+		return ErrAlgorithmMismatch
 	}
 
 	bitlen := x.Curve.Params().BitSize / 8
@@ -321,10 +337,11 @@ func (x *ECDSACredentials) SetPrivateKey(privatekey PrivateKey) error {
 
 }
 
+// Sign produces a signature for the given data.
 func (x *ECDSACredentials) Sign(data []byte) (Signature, error) {
 
 	if x.Private == nil {
-		return "", NotSigner
+		return "", ErrNotSigner
 	}
 
 	hasher := sha256.New()
@@ -354,14 +371,10 @@ func (x *ECDSACredentials) Sign(data []byte) (Signature, error) {
 
 }
 
+// Verify confirms that the given signature was produced from the
+// given data using the private key associated with this credential's
+// public key.
 func (x *ECDSACredentials) Verify(data []byte, signature Signature) error {
-
-	/*
-		st,ok := signature.Signature.(string)
-		if !ok {
-			return InvalidSignatureType
-		}
-	*/
 
 	bytes, err := base64.StdEncoding.DecodeString(string(signature))
 	if err != nil {
@@ -382,7 +395,7 @@ func (x *ECDSACredentials) Verify(data []byte, signature Signature) error {
 	sum := hasher.Sum(nil)
 
 	if !ecdsa.Verify(x.Public, sum, r, s) {
-		return UnverifiedSignature
+		return ErrUnverifiedSignature
 	}
 
 	return nil

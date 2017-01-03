@@ -190,7 +190,7 @@ func Test_Certificate_03(t *testing.T) {
 
 	err = pool.Verify(certificate)
 	require.NotNil(t, err)
-	require.Equal(t, NotCertificateAuthority, err)
+	require.Equal(t, ErrNotCertificateAuthority, err)
 
 }
 
@@ -247,7 +247,7 @@ func Test_Certificate_03a(t *testing.T) {
 
 	err = pool.Verify(&in_certificate)
 	require.NotNil(t, err)
-	require.Equal(t, NotCertificateAuthority, err)
+	require.Equal(t, ErrNotCertificateAuthority, err)
 
 }
 
@@ -301,7 +301,7 @@ func Test_Certificate_04(t *testing.T) {
 
 	err = pool.Verify(certificate)
 	require.NotNil(t, err)
-	require.Equal(t, UnverifiedSignature, err)
+	require.Equal(t, ErrUnverifiedSignature, err)
 
 }
 
@@ -362,7 +362,7 @@ func Test_Certificate_04a(t *testing.T) {
 
 	err = pool.Verify(&in_certificate)
 	require.NotNil(t, err)
-	require.Equal(t, UnverifiedSignature, err)
+	require.Equal(t, ErrUnverifiedSignature, err)
 
 }
 
@@ -504,6 +504,6 @@ func Test_Certificate_06(t *testing.T) {
 
 	err = pool.Verify(&in_certificate)
 	require.NotNil(t, err)
-	require.Equal(t, UnrecognizedCertificate, err)
+	require.Equal(t, ErrUnrecognizedCertificate, err)
 
 }

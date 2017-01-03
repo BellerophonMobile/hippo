@@ -5,20 +5,12 @@ import (
 	"sync"
 )
 
-var PreviousAlgorithm = fmt.Errorf("Previous algorithm registration")
-var UnknownAlgorithm = fmt.Errorf("Unknown algorithm")
-var AlgorithmMismatch = fmt.Errorf("Algorithm mismatch")
+var ErrPreviousAlgorithm = fmt.Errorf("Previous algorithm registration")
+var ErrUnknownAlgorithm = fmt.Errorf("Unknown algorithm")
+var ErrAlgorithmMismatch = fmt.Errorf("Algorithm mismatch")
 
-var NotSigner = fmt.Errorf("Not a signer")
-
-var InvalidPublicKeyType = fmt.Errorf("Invalid public key type")
-
-var InvalidPrivateKeyType = fmt.Errorf("Invalid private key type")
-
-var InvalidSignatureType = fmt.Errorf("Invalid signature")
-var UnverifiedSignature = fmt.Errorf("Unverified signature")
-
-// A Credentialer encapsulates key generation for a specific algorithm.
+// A Credentialer encapsulates key generation for a specific algorithm
+// and parameterization.
 type Credentialer interface {
 	Algorithm() string
 
@@ -31,8 +23,8 @@ type Credentialer interface {
 var credentialers = make(map[string]Credentialer)
 var credentialersmutex sync.Mutex
 
-// Register makes a Credentialer for a specific algorithm available through
-// the uniform interface
+// Register makes a Credentialer for a specific algorithm available
+// through the uniform interface.
 func Register(credentialer Credentialer) error {
 
 	credentialersmutex.Lock()
@@ -40,7 +32,7 @@ func Register(credentialer Credentialer) error {
 	defer credentialersmutex.Unlock()
 
 	if ok {
-		return PreviousAlgorithm
+		return ErrPreviousAlgorithm
 	}
 
 	credentialers[credentialer.Algorithm()] = credentialer
@@ -58,7 +50,7 @@ func Generate(algorithm string) (Credentials, error) {
 	credentialersmutex.Unlock()
 
 	if !ok {
-		return nil, UnknownAlgorithm
+		return nil, ErrUnknownAlgorithm
 	}
 
 	return credentialer.Generate()
@@ -66,11 +58,12 @@ func Generate(algorithm string) (Credentials, error) {
 }
 
 // New creates Credentials wrapping the given public and private key.
-// These must be matched.
+// These must indicate the same algorithm but otherwise no test is
+// made to confirm that they correspond to each other.
 func New(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	if public.Algorithm != private.Algorithm {
-		return nil, AlgorithmMismatch
+		return nil, ErrAlgorithmMismatch
 	}
 
 	credentialersmutex.Lock()
@@ -78,14 +71,14 @@ func New(public PublicKey, private PrivateKey) (Credentials, error) {
 	credentialersmutex.Unlock()
 
 	if !ok {
-		return nil, UnknownAlgorithm
+		return nil, ErrUnknownAlgorithm
 	}
 
 	return credentialer.New(public, private)
 
 }
 
-// NewVerifier wraps the given public key in Credentials.
+// NewVerifier wraps the given public key in Credentials for use.
 func NewVerifier(key PublicKey) (Credentials, error) {
 
 	credentialersmutex.Lock()
@@ -93,14 +86,14 @@ func NewVerifier(key PublicKey) (Credentials, error) {
 	credentialersmutex.Unlock()
 
 	if !ok {
-		return nil, UnknownAlgorithm
+		return nil, ErrUnknownAlgorithm
 	}
 
 	return credentialer.NewVerifier(key)
 
 }
 
-// NewSigner wraps the given private key in Credentials.
+// NewSigner wraps the given private key in Credentials for use.
 func NewSigner(key PrivateKey) (Credentials, error) {
 
 	credentialersmutex.Lock()
@@ -108,7 +101,7 @@ func NewSigner(key PrivateKey) (Credentials, error) {
 	credentialersmutex.Unlock()
 
 	if !ok {
-		return nil, UnknownAlgorithm
+		return nil, ErrUnknownAlgorithm
 	}
 
 	return credentialer.NewSigner(key)

@@ -1,5 +1,15 @@
 package hippo
 
+import (
+	"fmt"
+)
+
+var ErrNotSigner = fmt.Errorf("Not a signer")
+var ErrInvalidPublicKeyType = fmt.Errorf("Invalid public key type")
+var ErrInvalidPrivateKeyType = fmt.Errorf("Invalid private key type")
+var ErrInvalidSignatureType = fmt.Errorf("Invalid signature")
+var ErrUnverifiedSignature = fmt.Errorf("Unverified signature")
+
 // Verifier wraps a public key and can verify data.
 type Verifier interface {
 	PublicKey() PublicKey
@@ -22,7 +32,7 @@ type Credentials interface {
 }
 
 // PublicKey is a structure for importing and exporting public
-// keys. Verification is actually done with Credentials.or a Verifier.
+// keys. Verification is actually done with Credentials or a Verifier.
 // The format of the data is defined by the algorithm implementation
 // but should be generic JSON such that it may be parsed directly,
 // i.e., without special knowledge of the value of Public as might be
@@ -32,12 +42,13 @@ type PublicKey struct {
 	Public    interface{}
 }
 
+// ToFile serializes the PublicKey to the given file as JSON.
 func (k PublicKey) ToFile(fn string) error {
 	return toFile(k, fn)
 }
 
 // PrivateKey is a structure for importing and exporting private
-// keys. Signing is actually done with Credentials.or a Signer.  The
+// keys. Signing is actually done with Credentials or a Signer.  The
 // format of the data is defined by the algorithm implementation but
 // should be generic JSON such that it may be parsed directly, i.e.,
 // without special knowledge of the value of Private as might be
@@ -47,11 +58,12 @@ type PrivateKey struct {
 	Private   interface{}
 }
 
+// ToFile serializes the PrivateKey to the given file as JSON.
 func (k PrivateKey) ToFile(fn string) error {
 	return toFile(k, fn)
 }
 
-// Signatures are padded Base64 standard encoded strings.
+// Signatures are padded Base64-Standard encoded strings.
 type Signature string
 
 // PublicKeyFromFile reads the entirety of the given file and attempts

@@ -20,15 +20,15 @@ func Test_ECDSA_02(t *testing.T) {
 func Test_ECDSA_03(t *testing.T) {
 
 	/*
-	    // Signature was generated from Javascript using this key data
-			private := PrivateKey{
-				Algorithm: "ecdsa-p256",
-			Private: map[string]interface{} {
-					"X": "vHGHboq781mKvPK9MSPjAiF8cWgfI0lp0npkQGjBCH4",
-					"Y": "85H9JKx9LfzDKm7ylLCXI5gyuy1SMeenZnG3Gk72G1w",
-					"D": "By7yMbeb8tAGDdcIStukBFDeOoUSiYUuMxTdZelMoU4",
-				},
-			}
+		    // Signature was generated from Javascript using this key data
+				private := PrivateKey{
+					Algorithm: "ecdsa-p256",
+				Private: map[string]interface{} {
+						"X": "vHGHboq781mKvPK9MSPjAiF8cWgfI0lp0npkQGjBCH4",
+						"Y": "85H9JKx9LfzDKm7ylLCXI5gyuy1SMeenZnG3Gk72G1w",
+						"D": "By7yMbeb8tAGDdcIStukBFDeOoUSiYUuMxTdZelMoU4",
+					},
+				}
 	*/
 
 	public := PublicKey{
