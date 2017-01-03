@@ -44,11 +44,11 @@ func test_bogus(t *testing.T, algorithm string) {
 	sender, err := Generate(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
-	
+
 	attacker, err := Generate(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
-	
+
 	signature, err := attacker.Sign(data)
 	require.Nil(t, err)
 	require.NotEmpty(t, signature)

@@ -20,15 +20,15 @@ func Test_ECDSA_02(t *testing.T) {
 func Test_ECDSA_03(t *testing.T) {
 
 	/*
-    // Signature was generated from Javascript using this key data
-		private := PrivateKey{
-			Algorithm: "ecdsa-p256",
-		Private: map[string]interface{} {
-				"X": "vHGHboq781mKvPK9MSPjAiF8cWgfI0lp0npkQGjBCH4",
-				"Y": "85H9JKx9LfzDKm7ylLCXI5gyuy1SMeenZnG3Gk72G1w",
-				"D": "By7yMbeb8tAGDdcIStukBFDeOoUSiYUuMxTdZelMoU4",
-			},
-		}
+	    // Signature was generated from Javascript using this key data
+			private := PrivateKey{
+				Algorithm: "ecdsa-p256",
+			Private: map[string]interface{} {
+					"X": "vHGHboq781mKvPK9MSPjAiF8cWgfI0lp0npkQGjBCH4",
+					"Y": "85H9JKx9LfzDKm7ylLCXI5gyuy1SMeenZnG3Gk72G1w",
+					"D": "By7yMbeb8tAGDdcIStukBFDeOoUSiYUuMxTdZelMoU4",
+				},
+			}
 	*/
 
 	public := PublicKey{
@@ -39,7 +39,7 @@ func Test_ECDSA_03(t *testing.T) {
 		},
 	}
 
-	data := []byte{77, 117, 115, 104, 105, 32, 109, 117, 115, 104, 105}	
+	data := []byte{77, 117, 115, 104, 105, 32, 109, 117, 115, 104, 105}
 	signature := Signature("Z8x1sWscIaeL1XAtmzXbKH+bn57mscRNO5G9C336Dvk67b7mv17H3mWxSA++hIHVzTpgG3ruXadpI0jSd6W/vQ==")
 
 	test_signed(t, public, data, signature)
@@ -57,7 +57,7 @@ func Test_ECDSA_04(t *testing.T) {
 // compatibility with output from Javascript's WebCrypto API, which is
 // where the key data comes from.
 func Test_ECDSA_05(t *testing.T) {
-	
+
 	data := []byte("If you're the last man standing, you're not fighting hard enough!")
 
 	private := PrivateKey{

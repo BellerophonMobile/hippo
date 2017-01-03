@@ -5,6 +5,9 @@ import (
 	"testing"
 )
 
+// Test_Pool_01: Generate credentials, add them to a pool, sign some
+// data, and then confirm that some entity in the pool and then that
+// id specifically can verify the signature.
 func Test_Pool_01(t *testing.T) {
 
 	pool := NewVerifierPool()
@@ -28,6 +31,9 @@ func Test_Pool_01(t *testing.T) {
 
 }
 
+// Test_Pool_02: Generate two sets of credentials, add them to a pool,
+// sign some data using the first, and then confirm that some entity
+// in the pool and then that id specifically can verify the signature.
 func Test_Pool_02(t *testing.T) {
 
 	pool := NewVerifierPool()
@@ -56,6 +62,11 @@ func Test_Pool_02(t *testing.T) {
 
 }
 
+// Test_Pool_03: Generate three sets of credentials, add two to a
+// pool, sign some data using the third, and confirm that no entity in
+// the pool can verify, a verifier ID not present in the pool
+// generates an error, and a given verifier present in the pool cannot
+// verify either.
 func Test_Pool_03(t *testing.T) {
 
 	pool := NewVerifierPool()
@@ -84,8 +95,10 @@ func Test_Pool_03(t *testing.T) {
 
 	err = pool.VerifySpecific("crabapple", data, signature)
 	require.NotNil(t, err)
+	require.Equal(t, NoVerifier, err)
 
 	err = pool.VerifySpecific("foo", data, signature)
 	require.NotNil(t, err)
+	require.Equal(t, UnverifiedSignature, err)
 
 }
