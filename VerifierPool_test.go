@@ -23,6 +23,7 @@ func Test_Pool_01(t *testing.T) {
 	require.Nil(t, err)
 	require.NotEmpty(t, signature)
 
+	// Test that the data has been signed by some known source.
 	err = pool.VerifyAny(data, signature)
 	require.Nil(t, err)
 

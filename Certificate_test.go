@@ -414,14 +414,17 @@ func Test_Certificate_05(t *testing.T) {
 
 	// Put them together to make a certificate
 	out_certificate := &Certificate{Chain{user_cert, ca2_cert, ca1_cert}}
+
+	// Marshal to JSON to share the certificate somehow
 	bytes, err := out_certificate.ToBytes()
 	require.Nil(t, err)
 
+	// Unmarshal the shared certificate
 	var in_certificate Certificate
 	err = json.Unmarshal(bytes, &in_certificate)
 	require.Nil(t, err)
 
-	// Verify against a pool with the root
+	// Verify against a pool comprised of the root
 	pool := NewVerifierPool()
 	require.NotNil(t, pool)
 
@@ -459,7 +462,7 @@ func Test_Certificate_06(t *testing.T) {
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
-	// CA1 makes a bogus certificate
+	// CA1 makes a bogus certificate for itself
 	ca1_id := NewTestament("ca1", ca1.PublicKey(), Claims{"CertificateAuthority": true})
 	require.NotNil(t, ca1_id)
 

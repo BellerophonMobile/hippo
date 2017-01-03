@@ -79,17 +79,17 @@ func (c *chain) Set(flag string) error {
 func main() {
 	defer logberry.Std.Stop()
 
-	certId := flag.String("certid", "", "Certificate ID.")
-	subjectId := flag.String("subjectid", "", "Subject ID.")
-	publicKeyFile := flag.String("subjectkey", "", "Subject public key.")
-	signingKeyFile := flag.String("signingkey", "", "Signing private key.")
-	outFile := flag.String("out", "", "Output certificate.")
+	signerID := flag.String("signerid", "", "Signer ID (optional).")
+	subjectID := flag.String("subjectid", "", "Subject ID (optional).")
+	publicKeyFile := flag.String("subjectkey", "", "Subject public key (required).")
+	signingKeyFile := flag.String("signingkey", "", "Signing private key (required).")
+	outFile := flag.String("out", "", "Output certificate (required).")
 
 	claims := make(claims)
 	var chain chain
 
-	flag.Var(claims, "claim", "Add claim \"key,value\".")
-	flag.Var(&chain, "chain", "Add chained certificates.")
+	flag.Var(claims, "claim", "Add claim \"key,value\" (optional); may be invoked multiple times.")
+	flag.Var(&chain, "chain", "Add chained certificates from given file (optional); may be invoked multiple times.")
 
 	flag.Parse()
 
@@ -98,14 +98,14 @@ func main() {
 		return
 	}
 	
-	testament := hippo.NewTestament(*subjectId, *publicKey, hippo.Claims(claims))
+	testament := hippo.NewTestament(*subjectID, *publicKey, hippo.Claims(claims))
 
 	signer,err := makeSigner(*signingKeyFile)
 	if err != nil {
 		return
 	}
 
-	decl,err := sign(*certId, testament, signer)
+	decl,err := sign(*signerID, testament, signer)
 	if err != nil {
 		return
 	}
