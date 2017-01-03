@@ -12,7 +12,7 @@ HippoCrypto is provided under the open source
 
 > The MIT License (MIT)
 >
-> Copyright (c) 2015, 2016 [Bellerophon Mobile](http://bellerophonmobile.com/)
+> Copyright (c) 2016, 2017 [Bellerophon Mobile](http://bellerophonmobile.com/)
 > 
 >
 > Permission is hereby granted, free of charge, to any person
