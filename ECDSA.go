@@ -21,7 +21,10 @@ func init() {
 		},
 	}
 	for _, c := range curves {
-		Register(&c)
+		err := Register(&c)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }

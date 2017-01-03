@@ -11,7 +11,10 @@ import (
 var AlgorithmEd25519 = "ed25519"
 
 func init() {
-	Register(&ed25519_v)
+	err := Register(&ed25519_v)
+	if err != nil {
+		panic(err)
+	}
 }
 
 type ed25519_t struct{}
