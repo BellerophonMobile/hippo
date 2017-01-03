@@ -4,11 +4,28 @@ import (
 	"fmt"
 )
 
+// ErrPreviousVerifier is returned when adding an already added verifier to a
+// pool.
 var ErrPreviousVerifier = fmt.Errorf("Verifier exists")
+
+// ErrNoVerifier is returned when no verifier with a specified ID exists in a
+// pool.
 var ErrNoVerifier = fmt.Errorf("Invalid verifier")
+
+// ErrInvalidCertificate is returned when attempting to verify an invalid
+// certificate.
 var ErrInvalidCertificate = fmt.Errorf("Invalid certificate")
+
+// ErrUnrecognizedCertificate is returned when none of the signers in a
+// certificate are in a verifier pool.
 var ErrUnrecognizedCertificate = fmt.Errorf("Unrecognized certificate")
+
+// ErrBrokenCertificateChain is returned when a declaration's subject doesn't
+// match the previous declarations signer when verifying.
 var ErrBrokenCertificateChain = fmt.Errorf("Broken certificate chain")
+
+// ErrNotCertificateAuthority is returned when a chained declaration does not
+// have the "CertificateAuthority" claim.
 var ErrNotCertificateAuthority = fmt.Errorf("Chained declaration does not confirm certificate authority")
 
 // VerifierPool is a collection of verifiers.  Typically these are

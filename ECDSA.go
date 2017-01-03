@@ -61,7 +61,7 @@ func (x *ecdsa_t) Generate() (Credentials, error) {
 
 }
 
-// New creates wraps the given keys as Credentials.
+// New wraps the given keys as Credentials.
 func (x *ecdsa_t) New(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	var credentials ECDSACredentials

@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// ErrNoDeclarations is returned when loading an empty certificate.
 var ErrNoDeclarations = fmt.Errorf("No declarations in certificate")
 
 // Subject associates a string identifier for some entity with its

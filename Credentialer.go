@@ -5,18 +5,35 @@ import (
 	"sync"
 )
 
+// ErrPreviousAlgorithm is returned by Register calls when registering a
+// duplicate credentialier.
 var ErrPreviousAlgorithm = fmt.Errorf("Previous algorithm registration")
+
+// ErrUnknownAlgorithm is returned when attempting to generate or load keys
+// from an unregistered algorithm.
 var ErrUnknownAlgorithm = fmt.Errorf("Unknown algorithm")
+
+// ErrAlgorithmMismatch is returned when generating credentials from a keypair
+// with different algorithms specified.
 var ErrAlgorithmMismatch = fmt.Errorf("Algorithm mismatch")
 
 // A Credentialer encapsulates key generation for a specific algorithm
 // and parameterization.
 type Credentialer interface {
+	// Algorithm returns the label identifying the algorithm and
+	// parameterization of this credentialier.
 	Algorithm() string
 
+	// Generate creates a new set of Credentials.
 	Generate() (Credentials, error)
+
+	// New wraps the given keys as Credentials.
 	New(public PublicKey, private PrivateKey) (Credentials, error)
+
+	// NewVerifier wraps the given PublicKey as Credentials.
 	NewVerifier(key PublicKey) (Credentials, error)
+
+	// NewSigner wraps the given PublicKey as Credentials.
 	NewSigner(key PrivateKey) (Credentials, error)
 }
 
