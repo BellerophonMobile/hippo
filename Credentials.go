@@ -63,7 +63,7 @@ func (k PrivateKey) ToFile(fn string) error {
 	return toFile(k, fn)
 }
 
-// Signatures are padded Base64-Standard encoded strings.
+// A Signature is a padded Base64-Standard encoded strings.
 type Signature string
 
 // PublicKeyFromFile reads the entirety of the given file and attempts

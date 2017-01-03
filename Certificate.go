@@ -67,7 +67,7 @@ func CertificateFromFile(fn string) (*Certificate, error) {
 
 }
 
-// CertificateFromFile parses a Certificate from the given bytes.  It
+// CertificateFromBytes parses a Certificate from the given bytes.  It
 // does not verify the certificate.
 func CertificateFromBytes(buf []byte) (*Certificate, error) {
 
