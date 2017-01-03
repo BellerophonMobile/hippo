@@ -127,6 +127,9 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 
 		current := cert.Declarations[index]
 		currtestament, err := UnpackTestament(current.Claim)
+		if err != nil {
+			return err
+		}
 
 		// If a chained declaration is not for a certificate authority, fail
 		val, ok := currtestament.Claims["CertificateAuthority"]
