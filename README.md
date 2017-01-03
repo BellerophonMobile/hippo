@@ -5,7 +5,7 @@ packages, and provides a simple chained certificate.
 
 Why?
 
- * To have transparent algorithm selection and uniform
+ * To have transparent algorithm selection and a uniform
    signing/verification interface.
  * To have simple tokens that include certificate chains.
  
