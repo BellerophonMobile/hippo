@@ -7,7 +7,6 @@ import (
 var ErrNotSigner = fmt.Errorf("Not a signer")
 var ErrInvalidPublicKeyType = fmt.Errorf("Invalid public key type")
 var ErrInvalidPrivateKeyType = fmt.Errorf("Invalid private key type")
-var ErrInvalidSignatureType = fmt.Errorf("Invalid signature")
 var ErrUnverifiedSignature = fmt.Errorf("Unverified signature")
 
 // Verifier wraps a public key and can verify data.
