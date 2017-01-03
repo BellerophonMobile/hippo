@@ -15,7 +15,7 @@ var AlgorithmECDSA_P256 = "ecdsa-p256"
 func init() {
 
 	curves := []ecdsa_t{
-		ecdsa_t{
+		{
 			label: "p256",
 			curve: elliptic.P256(),
 		},

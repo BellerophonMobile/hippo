@@ -1,8 +1,9 @@
 package hippo
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 // Test_Pool_01: Generate credentials, add them to a pool, sign some

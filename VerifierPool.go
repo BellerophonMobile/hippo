@@ -2,8 +2,6 @@ package hippo
 
 import (
 	"fmt"
-	//	"encoding/base64"
-	//	"encoding/json"
 )
 
 var ErrPreviousVerifier = fmt.Errorf("Verifier exists")

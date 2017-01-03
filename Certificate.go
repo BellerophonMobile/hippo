@@ -20,11 +20,9 @@ type Testament struct {
 	ID string // An optional identifier for this particular testament.
 
 	Subject Subject // The subject of this assertion.
-	Claims  Claims  // Arbitrary claims made about the subject, other
-	// than its identity.
+	Claims  Claims  // Arbitrary claims made about the subject, other than its identity.
 
-	Expires string // Timepoint after which this Testament is to be
-	// considered invalid.
+	Expires string // Timepoint after which this Testament is to be considered invalid.
 }
 
 // Claims capture arbitrary key/value data.
@@ -44,8 +42,7 @@ type Chain []*Declaration
 // ease some handling for serialization and other tasks, as well as
 // possible future expansion to include other data.
 type Certificate struct {
-	Declarations Chain // All of the encoded and signed Testaments
-	// contained in this certificate.
+	Declarations Chain // All of the encoded and signed Testaments contained in this certificate.
 }
 
 // CertificateFromFile loads and parses a Certificate from the given

@@ -2,8 +2,9 @@ package hippo
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 // Test_Certificate_01: A CA generates a valid certificate for a user.

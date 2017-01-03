@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+
 	"github.com/agl/ed25519"
 )
 
@@ -13,8 +14,7 @@ func init() {
 	Register(&ed25519_v)
 }
 
-type ed25519_t struct {
-}
+type ed25519_t struct{}
 
 var ed25519_v ed25519_t
 
