@@ -3,6 +3,12 @@
 HippoCrypto wraps cryptography functions from Go stdlib and other
 packages, and provides a simple chained certificate.
 
+Why?
+
+ * To have transparent algorithm selection and uniform
+   signing/verification interface.
+ * To have simple tokens that include certificate chains.
+ 
 [![Build Status](https://travis-ci.org/BellerophonMobile/hippo.svg?branch=master)](https://travis-ci.org/BellerophonMobile/hippo?branch=master) [![GoDoc](https://godoc.org/github.com/BellerophonMobile/hippo?status.svg)](https://godoc.org/github.com/BellerophonMobile/hippo) 
 
 ## Wrapper
