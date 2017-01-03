@@ -10,7 +10,9 @@ import (
 	"math/big"
 )
 
-var AlgorithmECDSA_P256 = "ecdsa-p256"
+// AlgorithmECDSA_P256 is a constant string identifying the ECDSA algorithm
+// using the P-256 curve.
+const AlgorithmECDSA_P256 = "ecdsa-p256"
 
 func init() {
 

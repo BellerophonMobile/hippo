@@ -8,7 +8,8 @@ import (
 	"github.com/agl/ed25519"
 )
 
-var AlgorithmEd25519 = "ed25519"
+// AlgorithmEd25519 is a constant string identifying the ed25519 algorithm.
+const AlgorithmEd25519 = "ed25519"
 
 func init() {
 	err := Register(&ed25519_v)
