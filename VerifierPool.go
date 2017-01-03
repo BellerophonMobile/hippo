@@ -11,7 +11,7 @@ var NoVerifier = fmt.Errorf("Invalid verifier")
 
 var InvalidCertificate = fmt.Errorf("Invalid certificate")
 
-var UnverifiedCertificate = fmt.Errorf("Unrecognized certificate")
+var UnrecognizedCertificate = fmt.Errorf("Unrecognized certificate")
 
 var BrokenCertificateChain = fmt.Errorf("Broken certificate chain")
 
@@ -115,7 +115,6 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 
 		// If the public key does not link to the preceding declaration, fail
 		if currtestament.Subject.ID != prev.Signer {
-			fmt.Println(currtestament.Subject.ID, " vs ", prev.Signer)
 			return BrokenCertificateChain
 		}
 
@@ -139,6 +138,6 @@ func (x VerifierPool) Verify(cert *Certificate) error {
 	}
 
 	// None of the signers were in the pool, fail
-	return UnverifiedCertificate
+	return UnrecognizedCertificate
 
 }
