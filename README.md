@@ -186,7 +186,7 @@ It takes the subject's public key (its provable identity), signs it with the
 given signing key (the CA's key), and generates a certificate, e.g.:
 
 ```
-% ./bin/mkcert -subjectid "tjkopena" -subjectkey user.public -signerid="root" -signingkey root.private -out user.cert
+% ./bin/mkcert -subjectid "user" -subjectkey user.public -signerid="root" -signingkey root.private -out user.cert
 % cat user.cert
 {"Declarations":[{"Claim":"eyJJRCI6IiIsIlN1YmplY3QiOnsiSUQiOiJ0amtvcGVuYSIsIlB1YmxpY0tleSI6eyJBbGdvcml0aG0iOiJlY2RzYS1wMjU2IiwiUHVibGljIjp7IlgiOiJkNUN3STFFdWJVdUxHWjNYd19EeklFRmlnSFY1U1otM28yUERnSUVxNFBFIiwiWSI6InpKVm5GeDdKQ0loMlhQTmhNNHZZN0RSeTRmWWljSFVPNGc2N3F6YmlpajQifX19LCJDbGFpbXMiOnt9LCJFeHBpcmVzIjoiIn0=","Signer":"root","Signature":"+jw89RLk3Wg9zfhANhfffN3/1yIWmvkPsYyQGc/NDckaF520th0b8iX1mZC6/Si4d3tHDJA3LJZ2Co4yT0nnBA=="}]}
 ```
