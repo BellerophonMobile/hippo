@@ -14,7 +14,7 @@ func test_basic(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
-	sender, err := Generate(algorithm)
+	sender, err := GenerateCredentials(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 
@@ -42,11 +42,11 @@ func test_bogus(t *testing.T, algorithm string) {
 
 	data := []byte("It's too bad she wont live, but then again who does?")
 
-	sender, err := Generate(algorithm)
+	sender, err := GenerateCredentials(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 
-	attacker, err := Generate(algorithm)
+	attacker, err := GenerateCredentials(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 
@@ -85,7 +85,7 @@ func test_json(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
-	sender, err := Generate(algorithm)
+	sender, err := GenerateCredentials(algorithm)
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 

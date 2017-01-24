@@ -23,7 +23,7 @@ func init() {
 		},
 	}
 	for _, c := range curves {
-		err := Register(&c)
+		err := RegisterCredentialer(&c)
 		if err != nil {
 			panic(err)
 		}

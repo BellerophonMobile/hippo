@@ -10,11 +10,11 @@ import (
 // Test_Certificate_01: A CA generates a valid certificate for a user.
 func Test_Certificate_01(t *testing.T) {
 
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
@@ -46,15 +46,15 @@ func Test_Certificate_01(t *testing.T) {
 func Test_Certificate_02(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
@@ -94,15 +94,15 @@ func Test_Certificate_02(t *testing.T) {
 func Test_Certificate_02a(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
@@ -151,15 +151,15 @@ func Test_Certificate_02a(t *testing.T) {
 func Test_Certificate_03(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
@@ -201,15 +201,15 @@ func Test_Certificate_03(t *testing.T) {
 func Test_Certificate_03a(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
@@ -258,19 +258,19 @@ func Test_Certificate_03a(t *testing.T) {
 func Test_Certificate_04(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
-	bogusca, err := Generate(AlgorithmECDSA_P256)
+	bogusca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, bogusca)
 
@@ -312,19 +312,19 @@ func Test_Certificate_04(t *testing.T) {
 func Test_Certificate_04a(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca, err := Generate(AlgorithmECDSA_P256)
+	ca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
-	bogusca, err := Generate(AlgorithmECDSA_P256)
+	bogusca, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, bogusca)
 
@@ -373,19 +373,19 @@ func Test_Certificate_04a(t *testing.T) {
 func Test_Certificate_05(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca1, err := Generate(AlgorithmECDSA_P256)
+	ca1, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca1)
 
-	ca2, err := Generate(AlgorithmECDSA_P256)
+	ca2, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca2)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
@@ -443,23 +443,23 @@ func Test_Certificate_05(t *testing.T) {
 func Test_Certificate_06(t *testing.T) {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, user)
 
-	ca1, err := Generate(AlgorithmECDSA_P256)
+	ca1, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca1)
 
-	ca2, err := Generate(AlgorithmECDSA_P256)
+	ca2, err := GenerateCredentials(AlgorithmECDSA_P256)
 	require.Nil(t, err)
 	require.NotNil(t, ca2)
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 
-	bogus, err := Generate(AlgorithmEd25519)
+	bogus, err := GenerateCredentials(AlgorithmEd25519)
 	require.Nil(t, err)
 	require.NotNil(t, root)
 

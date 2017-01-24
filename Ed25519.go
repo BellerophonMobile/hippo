@@ -12,7 +12,7 @@ import (
 const AlgorithmEd25519 = "ed25519"
 
 func init() {
-	err := Register(&ed25519_v)
+	err := RegisterCredentialer(&ed25519_v)
 	if err != nil {
 		panic(err)
 	}

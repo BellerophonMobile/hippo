@@ -5,20 +5,20 @@ import (
 	"sync"
 )
 
-// ErrPreviousAlgorithm is returned by Register calls when registering a
-// duplicate credentialier.
+// ErrPreviousAlgorithm is returned by Register calls when registering
+// a duplicate Credentialier or Cipherer.
 var ErrPreviousAlgorithm = fmt.Errorf("Previous algorithm registration")
 
-// ErrUnknownAlgorithm is returned when attempting to generate or load keys
-// from an unregistered algorithm.
+// ErrUnknownAlgorithm is returned when attempting to generate or load
+// keys from an unregistered algorithm.
 var ErrUnknownAlgorithm = fmt.Errorf("Unknown algorithm")
 
-// ErrAlgorithmMismatch is returned when generating credentials from a keypair
-// with different algorithms specified.
+// ErrAlgorithmMismatch is returned when generating Credentials or
+// Ciphers from a keypair with different algorithms specified.
 var ErrAlgorithmMismatch = fmt.Errorf("Algorithm mismatch")
 
-// A Credentialer encapsulates key generation for a specific algorithm
-// and parameterization.
+// A Credentialer encapsulates key generation for a specific digital
+// signature algorithm and parameterization.
 type Credentialer interface {
 	// Algorithm returns the label identifying the algorithm and
 	// parameterization of this credentialier.
@@ -40,9 +40,9 @@ type Credentialer interface {
 var credentialers = make(map[string]Credentialer)
 var credentialersmutex sync.Mutex
 
-// Register makes a Credentialer for a specific algorithm available
-// through the uniform interface.
-func Register(credentialer Credentialer) error {
+// RegisterCredentialer makes a Credentialer for a specific algorithm
+// available through the uniform interface.
+func RegisterCredentialer(credentialer Credentialer) error {
 
 	credentialersmutex.Lock()
 	_, ok := credentialers[credentialer.Algorithm()]
@@ -58,9 +58,9 @@ func Register(credentialer Credentialer) error {
 
 }
 
-// Generate produces Credentials with new random keys following the
-// given algorithm.
-func Generate(algorithm string) (Credentials, error) {
+// GenerateCredentials produces Credentials with new random keys
+// following the given algorithm.
+func GenerateCredentials(algorithm string) (Credentials, error) {
 
 	credentialersmutex.Lock()
 	credentialer, ok := credentialers[algorithm]
@@ -74,10 +74,10 @@ func Generate(algorithm string) (Credentials, error) {
 
 }
 
-// New creates Credentials wrapping the given public and private key.
-// These must indicate the same algorithm but otherwise no test is
-// made to confirm that they correspond to each other.
-func New(public PublicKey, private PrivateKey) (Credentials, error) {
+// NewCredentials creates Credentials wrapping the given public and
+// private key.  These must indicate the same algorithm but otherwise
+// no test is made to confirm that they correspond to each other.
+func NewCredentials(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	if public.Algorithm != private.Algorithm {
 		return nil, ErrAlgorithmMismatch

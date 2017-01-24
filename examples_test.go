@@ -9,8 +9,8 @@ import (
 // signing some data, sharing the key bytes, and verifying the data.
 func Example_Sign() {
 
-	// Generate a key
-	sender, err := Generate("ed25519")
+	// GenerateCredentials a key
+	sender, err := GenerateCredentials("ed25519")
 	if err != nil {
 		panic(err)
 	}
@@ -61,22 +61,22 @@ func Example_Sign() {
 func Example_CertificateChain() {
 
 	// Create some keys
-	user, err := Generate(AlgorithmEd25519)
+	user, err := GenerateCredentials(AlgorithmEd25519)
 	if err != nil {
 		panic(err)
 	}
 
-	ca1, err := Generate(AlgorithmECDSA_P256)
+	ca1, err := GenerateCredentials(AlgorithmECDSA_P256)
 	if err != nil {
 		panic(err)
 	}
 
-	ca2, err := Generate(AlgorithmECDSA_P256)
+	ca2, err := GenerateCredentials(AlgorithmECDSA_P256)
 	if err != nil {
 		panic(err)
 	}
 
-	root, err := Generate(AlgorithmEd25519)
+	root, err := GenerateCredentials(AlgorithmEd25519)
 	if err != nil {
 		panic(err)
 	}

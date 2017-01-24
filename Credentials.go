@@ -4,16 +4,15 @@ import (
 	"fmt"
 )
 
-// ErrNotSigner is returned when attempting to sign data withouta private key.
+// ErrNotSigner is returned when attempting to sign data without a
+// private key or if the algorithm interface does not implement
+// signing.
 var ErrNotSigner = fmt.Errorf("Not a signer")
 
-// ErrInvalidPublicKeyType is returned when setting an invalid public key to a
-// credential.
-var ErrInvalidPublicKeyType = fmt.Errorf("Invalid public key type")
-
-// ErrInvalidPrivateKeyType is returned when setting an invalid private key to
-// a credential.
-var ErrInvalidPrivateKeyType = fmt.Errorf("Invalid private key type")
+// ErrNotVerifier is returned when attempting to verify data without a
+// public key or if the algorithm interface does not implement
+// verification.
+var ErrNotVerifier = fmt.Errorf("Not a verifier")
 
 // ErrUnverifiedSignature is returned when a signature fails validation.
 var ErrUnverifiedSignature = fmt.Errorf("Unverified signature")
@@ -54,53 +53,5 @@ type Credentials interface {
 	SetPublicKey(publickey PublicKey) error
 }
 
-// PublicKey is a structure for importing and exporting public
-// keys. Verification is actually done with Credentials or a Verifier.
-// The format of the data is defined by the algorithm implementation
-// but should be generic JSON such that it may be parsed directly,
-// i.e., without special knowledge of the value of Public as might be
-// necessary to instantiate a specific class, etc..
-type PublicKey struct {
-	Algorithm string
-	Public    interface{}
-}
-
-// ToFile serializes the PublicKey to the given file as JSON.
-func (k PublicKey) ToFile(fn string) error {
-	return toFile(k, fn)
-}
-
-// PrivateKey is a structure for importing and exporting private
-// keys. Signing is actually done with Credentials or a Signer.  The
-// format of the data is defined by the algorithm implementation but
-// should be generic JSON such that it may be parsed directly, i.e.,
-// without special knowledge of the value of Private as might be
-// necessary to instantiate a specific class, etc..
-type PrivateKey struct {
-	Algorithm string
-	Private   interface{}
-}
-
-// ToFile serializes the PrivateKey to the given file as JSON.
-func (k PrivateKey) ToFile(fn string) error {
-	return toFile(k, fn)
-}
-
 // A Signature is a padded Base64-Standard encoded strings.
 type Signature string
-
-// PublicKeyFromFile reads the entirety of the given file and attempts
-// to parse it into a PublicKey.
-func PublicKeyFromFile(fn string) (*PublicKey, error) {
-	var key PublicKey
-	err := fromFile(fn, &key)
-	return &key, err
-}
-
-// PrivateKeyFromFile reads the entirety of the given file and
-// attempts to parse it into a PrivateKey.
-func PrivateKeyFromFile(fn string) (*PrivateKey, error) {
-	var key PrivateKey
-	err := fromFile(fn, &key)
-	return &key, err
-}
