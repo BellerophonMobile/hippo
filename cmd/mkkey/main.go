@@ -29,7 +29,7 @@ func main() {
 func generateKeys(algorithm string) (hippo.Credentials,error) {
 	task := logberry.Main.Task("Generate keys")
 
-	keys, err := hippo.Generate(algorithm)
+	keys, err := hippo.GenerateCredentials(algorithm)
 	if err != nil {
 		return nil,task.Error(err)
 	}
