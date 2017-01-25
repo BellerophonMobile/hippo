@@ -14,6 +14,10 @@ var ErrNotEncrypter = fmt.Errorf("Not an encrypter")
 // encryption.
 var ErrNotDecrypter = fmt.Errorf("Not a decrypter")
 
+// ErrSymmetric is returned when public key operations are called on a
+// symmetric algorithm.
+var ErrSymmetric = fmt.Errorf("Algorithm is symmetric, no public key")
+
 // Encrypter wraps a public key and can encrypt data.
 type Encrypter interface {
 	// PublicKey returns a JSON Base64-URL encoded marshaling of the

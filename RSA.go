@@ -48,7 +48,7 @@ func (x *rsaoaep_t) Generate() (Cipher, error) {
 
 }
 
-// New wraps the given keys as Credentials.
+// New wraps the given keys in a Cipher.
 func (x *rsaoaep_t) New(public PublicKey, private PrivateKey) (Cipher, error) {
 
 	var cipher RSAOAEPCipher
@@ -109,9 +109,9 @@ func (x *rsaoaep_t) NewDecrypter(key PrivateKey) (Cipher, error) {
 
 type RSAOAEPCipher struct {
 	Algorithm string
+	Bits      int
 	Public    *rsa.PublicKey
 	Private   *rsa.PrivateKey
-	Bits      int
 }
 
 func (x *RSAOAEPCipher) PublicKey() PublicKey {
@@ -253,11 +253,19 @@ func (x *RSAOAEPCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 func (x *RSAOAEPCipher) Encrypt(data []byte) ([]byte, error) {
 
+	if x.Public == nil {
+		return nil, ErrNotEncrypter
+	}
+
 	return rsa.EncryptOAEP(sha256.New(), rand.Reader, x.Public, data, []byte{})
 
 }
 
 func (x *RSAOAEPCipher) Decrypt(data []byte) ([]byte, error) {
+
+	if x.Private == nil {
+		return nil, ErrNotDecrypter
+	}
 
 	return rsa.DecryptOAEP(sha256.New(), rand.Reader, x.Private, data, []byte{})
 
