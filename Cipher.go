@@ -19,7 +19,7 @@ type Encrypter interface {
 	// PublicKey returns a JSON Base64-URL encoded marshaling of the
 	// encrypter's public key.
 	PublicKey() PublicKey
-	
+
 	// Encrypt produces a cipher block for the given data.
 	Encrypt(data []byte) ([]byte, error)
 }
@@ -29,7 +29,7 @@ type Decrypter interface {
 	// PrivateKey returns a JSON Base64-URL encoded marshaling of the
 	// decrypter's private key.
 	PrivateKey() PrivateKey
-	
+
 	// Decrypt takes a cipher block and produces clear data.
 	Decrypt(data []byte) ([]byte, error)
 }
@@ -45,5 +45,5 @@ type Cipher interface {
 
 	// SetPublicKey sets the cipher's public key from the given
 	// PublicKey containing JSON Base64-URL encoded data.
-	SetPublicKey(publickey PublicKey) error	
+	SetPublicKey(publickey PublicKey) error
 }

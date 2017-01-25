@@ -102,7 +102,7 @@ func (x *ecdsa_t) NewVerifier(key PublicKey) (Credentials, error) {
 
 }
 
-// NewSigner wraps the given PublicKey as Credentials.
+// NewSigner wraps the given PrivateKey as Credentials.
 func (x *ecdsa_t) NewSigner(key PrivateKey) (Credentials, error) {
 
 	var credentials ECDSACredentials

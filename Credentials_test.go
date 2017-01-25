@@ -10,7 +10,7 @@ import (
 
 // test_basic is a test utility function to generate credentials using
 // the given algorithm and then sign and verify some data using them.
-func test_basic(t *testing.T, algorithm string) {
+func test_credentials_basic(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
@@ -38,7 +38,7 @@ func test_basic(t *testing.T, algorithm string) {
 // test_bogus is a test utility function to generate two sets of
 // credentials using the given algorithm, then sign the data with one
 // set but verify and reject with the other set.
-func test_bogus(t *testing.T, algorithm string) {
+func test_credentials_bogus(t *testing.T, algorithm string) {
 
 	data := []byte("It's too bad she wont live, but then again who does?")
 
@@ -66,7 +66,7 @@ func test_bogus(t *testing.T, algorithm string) {
 
 // test_signed is a test utility function to take signed data and
 // verify it against the given public key.
-func test_signed(t *testing.T, public PublicKey, data []byte, signature Signature) {
+func test_credentials_signed(t *testing.T, public PublicKey, data []byte, signature Signature) {
 
 	verifier, err := NewVerifier(public)
 	require.Nil(t, err)
@@ -81,7 +81,7 @@ func test_signed(t *testing.T, public PublicKey, data []byte, signature Signatur
 // using the given algorithm, signs some data using them, marshals the
 // public key to JSON, and then unmarshals the JSON and verifies the
 // data against the extracted public key.
-func test_json(t *testing.T, algorithm string) {
+func test_credentials_json(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
