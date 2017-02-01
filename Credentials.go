@@ -24,8 +24,8 @@ type Verifier interface {
 	PublicKey() PublicKey
 
 	// Verify confirms that the given signature was produced from the
-	// given data using the private key associated with this credential's
-	// public key.
+	// given data using the private key associated with this
+	// credential's public key.  Any error indicates that it was not.
 	Verify(data []byte, signature Signature) error
 }
 

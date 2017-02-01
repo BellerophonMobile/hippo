@@ -34,7 +34,12 @@ type Decrypter interface {
 	// decrypter's private key.
 	PrivateKey() PrivateKey
 
-	// Decrypt takes a cipher block and produces clear data.
+	// Decrypt takes a cipher block and produces clear data.  N.B.: In
+	// general the absence of an error does NOT indicate that the data
+	// is valid.  Indeed, under a public key algorithm this question
+	// doesn't even make sense.  A separate mechanism must be applied.
+	// Then note that this is not as simple as signing either the
+	// plaintext or ciphertext alone.
 	Decrypt(data []byte) ([]byte, error)
 }
 
