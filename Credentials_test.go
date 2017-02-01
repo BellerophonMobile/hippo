@@ -89,7 +89,7 @@ func test_credentials_json(t *testing.T, algorithm string) {
 	require.Nil(t, err)
 	require.NotNil(t, sender)
 
-	publicjson, err := json.Marshal(sender.PublicKey())
+	publicjson, err := sender.PublicKey().ToBytes()
 	require.Nil(t, err)
 	t.Log("Public Key", string(publicjson))
 

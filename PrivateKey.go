@@ -32,3 +32,13 @@ func PrivateKeyFromFile(fn string) (*PrivateKey, error) {
 	err := fromFile(fn, &key)
 	return &key, err
 }
+
+func (k PrivateKey) ToBytes() ([]byte,error) {
+	return toBytes(k)
+}
+
+func PrivateKeyFromBytes(buf []byte) (*PrivateKey,error) {
+	var key PrivateKey
+	err := fromBytes(buf, &key)
+	return &key, err
+}

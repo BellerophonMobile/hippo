@@ -32,3 +32,13 @@ func PublicKeyFromFile(fn string) (*PublicKey, error) {
 	err := fromFile(fn, &key)
 	return &key, err
 }
+
+func (k PublicKey) ToBytes() ([]byte,error) {
+	return toBytes(k)
+}
+
+func PublicKeyFromBytes(buf []byte) (*PublicKey,error) {
+	var key PublicKey
+	err := fromBytes(buf, &key)
+	return &key, err
+}
