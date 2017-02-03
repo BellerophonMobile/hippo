@@ -14,7 +14,7 @@ import (
 const AlgorithmAES_256_CBC = "aes-256-cbc"
 
 func init() {
-	err := RegisterCipherer(&aescbc_t{bits: 256})
+	err := RegisterSKCipherer(&aescbc_t{bits: 256})
 	if err != nil {
 		panic(err)
 	}
@@ -30,10 +30,10 @@ func (x *aescbc_t) Algorithm() string {
 	return fmt.Sprintf("aes-%v-cbc", x.bits)
 }
 
-// Generate creates a new Cipher.
-func (x *aescbc_t) Generate() (Cipher, error) {
+// Generate creates a new SKCipher.
+func (x *aescbc_t) Generate() (SKCipher, error) {
 
-	var cipher AESCBCCipher
+	var cipher AESCBCSKCipher
 
 	cipher.Algorithm = x.Algorithm()
 	cipher.Bits = x.bits
@@ -48,30 +48,16 @@ func (x *aescbc_t) Generate() (Cipher, error) {
 
 }
 
-// New wraps the given key in a Cipher.
-func (x *aescbc_t) New(public PublicKey, private PrivateKey) (Cipher, error) {
+// New wraps the given secret key in an SKCipher.
+func (x *aescbc_t) New(key PrivateKey) (SKCipher, error) {
 
-	return nil, ErrSymmetric
-
-}
-
-// NewEncrypter wraps the given PublicKey as a Cipher.
-func (x *aescbc_t) NewEncrypter(key PublicKey) (Cipher, error) {
-
-	return nil, ErrSymmetric
-
-}
-
-// NewDecrypter wraps the given PrivateKey as a Cipher.
-func (x *aescbc_t) NewDecrypter(key PrivateKey) (Cipher, error) {
-
-	var cipher AESCBCCipher
+	var cipher AESCBCSKCipher
 	var err error
 
 	cipher.Algorithm = x.Algorithm()
 	cipher.Bits = x.bits
 
-	err = cipher.SetPrivateKey(key)
+	err = cipher.SetKey(key)
 	if err != nil {
 		return nil, err
 	}
@@ -80,25 +66,13 @@ func (x *aescbc_t) NewDecrypter(key PrivateKey) (Cipher, error) {
 
 }
 
-type AESCBCCipher struct {
+type AESCBCSKCipher struct {
 	Algorithm string
 	Bits      int
 	Key       []byte
 }
 
-func (x *AESCBCCipher) PublicKey() PublicKey {
-
-	return PublicKey{}
-
-}
-
-func (x *AESCBCCipher) SetPublicKey(publickey PublicKey) error {
-
-	return ErrSymmetric
-
-}
-
-func (x *AESCBCCipher) PrivateKey() PrivateKey {
+func (x *AESCBCSKCipher) SecretKey() PrivateKey {
 
 	key := PrivateKey{
 		Algorithm: x.Algorithm,
@@ -109,13 +83,13 @@ func (x *AESCBCCipher) PrivateKey() PrivateKey {
 
 }
 
-func (x *AESCBCCipher) SetPrivateKey(privatekey PrivateKey) error {
+func (x *AESCBCSKCipher) SetKey(key PrivateKey) error {
 
-	if privatekey.Algorithm != x.Algorithm {
+	if key.Algorithm != x.Algorithm {
 		return ErrAlgorithmMismatch
 	}
 
-	keydata, ok := privatekey.Private.(string)
+	keydata, ok := key.Private.(string)
 	if !ok {
 		return fmt.Errorf("Data is not a string")
 	}
@@ -134,7 +108,7 @@ func (x *AESCBCCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 }
 
-func (x *AESCBCCipher) Encrypt(data []byte) ([]byte, error) {
+func (x *AESCBCSKCipher) Encrypt(data []byte) ([]byte, error) {
 
 	block, err := aes.NewCipher(x.Key)
 	if err != nil {
@@ -157,7 +131,7 @@ func (x *AESCBCCipher) Encrypt(data []byte) ([]byte, error) {
 
 }
 
-func (x *AESCBCCipher) Decrypt(data []byte) ([]byte, error) {
+func (x *AESCBCSKCipher) Decrypt(data []byte) ([]byte, error) {
 
 	if (len(data) % aes.BlockSize) != 0 {
 		return nil, fmt.Errorf("Data must be multiple of blocksize")

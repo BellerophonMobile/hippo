@@ -7,27 +7,64 @@ import (
 	"testing"
 )
 
-func Test_RSA_01(t *testing.T) {
-	test_cipher_basic(t, AlgorithmRSA_OAEP_2048)
+func Test_RSA_Basic(t *testing.T) {
+	test_pkcipher_basic(t, AlgorithmRSA_OAEP_2048)
 }
 
-func Test_RSA_02(t *testing.T) {
-	test_cipher_bogus_key(t, AlgorithmRSA_OAEP_2048)
+func Test_RSA_JSON_Public(t *testing.T) {
+	test_pkcipher_json_public(t, AlgorithmRSA_OAEP_2048)
 }
 
-func Test_RSA_03(t *testing.T) {
-	test_cipher_bogus_data(t, AlgorithmRSA_OAEP_2048)
+func Test_RSA_JSON_Private(t *testing.T) {
+	test_pkcipher_json_private(t, AlgorithmRSA_OAEP_2048)
 }
 
-func Test_RSA_04(t *testing.T) {
-	test_cipher_json_public(t, AlgorithmRSA_OAEP_2048)
+
+func Test_RSA_Bogus_Key(t *testing.T) {
+
+	data := []byte("Four score and seven years ago")
+
+	keys, err := GeneratePKCipher(AlgorithmRSA_OAEP_2048)
+	require.Nil(t, err)
+	require.NotNil(t, keys)
+
+	bogus, err := GeneratePKCipher(AlgorithmRSA_OAEP_2048)
+	require.Nil(t, err)
+	require.NotNil(t, keys)
+
+	ciphertext, err := keys.Encrypt(data)
+	require.Nil(t, err)
+	require.NotNil(t, ciphertext)
+
+	cleartext, err := bogus.Decrypt(ciphertext)
+	require.NotNil(t, err)
+	require.Nil(t, cleartext)
+
 }
 
-func Test_RSA_05(t *testing.T) {
-	test_cipher_json_private(t, AlgorithmRSA_OAEP_2048)
+func Test_RSA_Bogus_Data(t *testing.T) {
+
+	data := []byte("Four score and seven years ago")
+
+	keys, err := GeneratePKCipher(AlgorithmRSA_OAEP_2048)
+	require.Nil(t, err)
+	require.NotNil(t, keys)
+
+	bogus, err := GeneratePKCipher(AlgorithmRSA_OAEP_2048)
+	require.Nil(t, err)
+	require.NotNil(t, keys)
+
+	ciphertext, err := bogus.Encrypt(data)
+	require.Nil(t, err)
+	require.NotNil(t, ciphertext)
+
+	cleartext, err := keys.Decrypt(ciphertext)
+	require.NotNil(t, err)
+	require.Nil(t, cleartext)
+	
 }
 
-func Test_RSA_06(t *testing.T) {
+func Test_RSA_WebCrypto_Out(t *testing.T) {
 
 	data := []byte("Four score and seven years ago")
 
@@ -60,7 +97,7 @@ func Test_RSA_06(t *testing.T) {
 
 }
 
-func Test_RSA_07(t *testing.T) {
+func Test_RSA_WebCrypto_In(t *testing.T) {
 
 	data := []byte("Four score and seven years ago")
 
