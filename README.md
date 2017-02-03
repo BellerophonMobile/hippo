@@ -2,7 +2,7 @@
 
 HippoCrypto wraps basic cryptography functions for digital signatures
 and encryption from Go stdlib and other packages.  It also provides a
-minimal chained certificate.
+minimal chained certificate for delegated authentication.
 
 Why?
 
@@ -28,8 +28,10 @@ provides a very easy way for programs to transparently parameterize
 algorithm selection.
 
 Where possible, the wrappers' key serialization functions are designed
-to work with the [HTML5 WebCrypto JavaScript
-API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API).
+to work with imports to and exports from the [HTML5 WebCrypto
+JavaScript
+API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API),
+though they do not directly import/export JWKs.
 
 ### Digital Signatures
 
