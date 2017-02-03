@@ -9,34 +9,63 @@ import (
 	"fmt"
 )
 
-// AlgorithmAES_256_CBC is a constant string identifying the AES
-// algorithm with 256 bit key and cipher block chaining.
-const AlgorithmAES_256_CBC = "aes-256-cbc"
+type AESMode int
 
-func init() {
-	err := RegisterSKCipherer(&aescbc_t{bits: 256})
-	if err != nil {
-		panic(err)
-	}
+var modelabels = []string{
+	"cbc",
+	"gcm",
 }
 
-type aescbc_t struct {
+const (
+	CBC AESMode = iota
+	GCM
+)
+
+var ErrUnsupportedMode = fmt.Errorf("Unknown mode")
+
+// AlgorithmAES_256_CBC is a constant string identifying the AES
+// algorithm with 256 bit key and cipher block chaining mode.
+const AlgorithmAES_256_CBC = "aes-256-cbc"
+
+// AlgorithmAES_256_CBC is a constant string identifying the AES
+// algorithm with 256 bit key and Galois/counter mode.
+const AlgorithmAES_256_GCM = "aes-256-gcm"
+
+func init() {
+
+	modes := []aes_t{
+		aes_t{bits: 256, mode: CBC},
+		aes_t{bits: 256, mode: GCM},
+	}
+
+	for _,m := range(modes) {
+		err := RegisterSKCipherer(&m)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+}
+
+type aes_t struct {
 	bits int
+	mode AESMode
 }
 
 // Algorithm returns the label identifying the algorithm and
 // parameterization of this cipherer.
-func (x *aescbc_t) Algorithm() string {
-	return fmt.Sprintf("aes-%v-cbc", x.bits)
+func (x *aes_t) Algorithm() string {
+	return fmt.Sprintf("aes-%v-%v", x.bits, modelabels[x.mode])
 }
 
 // Generate creates a new SKCipher.
-func (x *aescbc_t) Generate() (SKCipher, error) {
+func (x *aes_t) Generate() (SKCipher, error) {
 
-	var cipher AESCBCSKCipher
+	var cipher AESCipher
 
 	cipher.Algorithm = x.Algorithm()
 	cipher.Bits = x.bits
+	cipher.Mode = x.mode
 
 	cipher.Key = make([]byte, x.bits/8)
 	_, err := rand.Read(cipher.Key)
@@ -49,13 +78,14 @@ func (x *aescbc_t) Generate() (SKCipher, error) {
 }
 
 // New wraps the given secret key in an SKCipher.
-func (x *aescbc_t) New(key PrivateKey) (SKCipher, error) {
+func (x *aes_t) New(key PrivateKey) (SKCipher, error) {
 
-	var cipher AESCBCSKCipher
+	var cipher AESCipher
 	var err error
 
 	cipher.Algorithm = x.Algorithm()
 	cipher.Bits = x.bits
+	cipher.Mode = x.mode
 
 	err = cipher.SetKey(key)
 	if err != nil {
@@ -66,13 +96,14 @@ func (x *aescbc_t) New(key PrivateKey) (SKCipher, error) {
 
 }
 
-type AESCBCSKCipher struct {
+type AESCipher struct {
 	Algorithm string
 	Bits      int
+	Mode      AESMode
 	Key       []byte
 }
 
-func (x *AESCBCSKCipher) SecretKey() PrivateKey {
+func (x *AESCipher) SecretKey() PrivateKey {
 
 	key := PrivateKey{
 		Algorithm: x.Algorithm,
@@ -83,7 +114,7 @@ func (x *AESCBCSKCipher) SecretKey() PrivateKey {
 
 }
 
-func (x *AESCBCSKCipher) SetKey(key PrivateKey) error {
+func (x *AESCipher) SetKey(key PrivateKey) error {
 
 	if key.Algorithm != x.Algorithm {
 		return ErrAlgorithmMismatch
@@ -108,18 +139,33 @@ func (x *AESCBCSKCipher) SetKey(key PrivateKey) error {
 
 }
 
-func (x *AESCBCSKCipher) Encrypt(data []byte) ([]byte, error) {
-
+func (x *AESCipher) Encrypt(data []byte) ([]byte, error) {
+	
 	block, err := aes.NewCipher(x.Key)
 	if err != nil {
 		return nil, err
 	}
+	
+	switch x.Mode {
+	case CBC:
+		return encrypt_cbc(block, data)
+
+	case GCM:
+		return encrypt_gcm(block, data)		
+	}
+
+	return nil,ErrUnsupportedMode
+	
+}
+
+func encrypt_cbc(block cipher.Block, data []byte) ([]byte, error) {
 
 	msg := pad(data)
+
 	ciphertext := make([]byte, aes.BlockSize+len(msg))
 
 	iv := ciphertext[:aes.BlockSize]
-	_, err = rand.Read(iv)
+	_, err := rand.Read(iv)
 	if err != nil {
 		return nil, err
 	}
@@ -128,18 +174,51 @@ func (x *AESCBCSKCipher) Encrypt(data []byte) ([]byte, error) {
 	mode.CryptBlocks(ciphertext[aes.BlockSize:], msg)
 
 	return ciphertext, nil
+	
+}
+
+func encrypt_gcm(block cipher.Block, data []byte) ([]byte, error) {
+
+	mode, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := make([]byte, mode.NonceSize(), mode.NonceSize()+len(data))
+	_,err = rand.Read(nonce)
+	if err != nil {
+		return nil, err
+	}
+
+	ciphertext := mode.Seal(nonce, nonce, data, nil)
+
+	return ciphertext,nil
 
 }
 
-func (x *AESCBCSKCipher) Decrypt(data []byte) ([]byte, error) {
-
-	if (len(data) % aes.BlockSize) != 0 {
-		return nil, fmt.Errorf("Data must be multiple of blocksize")
-	}
+func (x *AESCipher) Decrypt(data []byte) ([]byte, error) {
 
 	block, err := aes.NewCipher(x.Key)
 	if err != nil {
 		return nil, err
+	}
+
+	switch x.Mode {
+	case CBC:
+		return decrypt_cbc(block, data)
+
+	case GCM:
+		return decrypt_gcm(block, data)		
+	}
+
+	return nil,ErrUnsupportedMode
+
+}
+
+func decrypt_cbc(block cipher.Block, data []byte) ([]byte, error) {
+
+	if (len(data) % aes.BlockSize) != 0 {
+		return nil, fmt.Errorf("Data must be multiple of blocksize")
 	}
 
 	iv := data[:aes.BlockSize]
@@ -150,12 +229,31 @@ func (x *AESCBCSKCipher) Decrypt(data []byte) ([]byte, error) {
 	mode := cipher.NewCBCDecrypter(block, iv)
 	mode.CryptBlocks(dst, msg)
 
-	res, err := unpad(dst)
+	plaintext, err := unpad(dst)
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return plaintext, nil
+
+}
+
+func decrypt_gcm(block cipher.Block, data []byte) ([]byte, error) {
+
+	mode, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := data[:mode.NonceSize()]
+	msg := data[mode.NonceSize():]
+
+	plaintext,err := mode.Open(nil, nonce, msg, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return plaintext, nil
 
 }
 

@@ -10,15 +10,15 @@ func test_skcipher_basic(t *testing.T, algorithm string) {
 
 	data := []byte("Four score and seven years ago")
 
-	keys, err := GenerateSKCipher(algorithm)
+	key, err := GenerateSKCipher(algorithm)
 	require.Nil(t, err)
-	require.NotNil(t, keys)
+	require.NotNil(t, key)
 
-	ciphertext, err := keys.Encrypt(data)
+	ciphertext, err := key.Encrypt(data)
 	require.Nil(t, err)
 	require.NotNil(t, ciphertext)
 
-	cleartext, err := keys.Decrypt(ciphertext)
+	cleartext, err := key.Decrypt(ciphertext)
 	require.Nil(t, err)
 	require.NotNil(t, cleartext)
 

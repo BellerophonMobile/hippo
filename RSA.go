@@ -32,7 +32,7 @@ func (x *rsaoaep_t) Algorithm() string {
 // Generate creates a new PKCipher.
 func (x *rsaoaep_t) Generate() (PKCipher, error) {
 
-	var cipher RSAOAEPPKCipher
+	var cipher RSAOAEPCipher
 	var err error
 
 	cipher.Algorithm = x.Algorithm()
@@ -51,7 +51,7 @@ func (x *rsaoaep_t) Generate() (PKCipher, error) {
 // New wraps the given keys in a PKCipher.
 func (x *rsaoaep_t) New(public PublicKey, private PrivateKey) (PKCipher, error) {
 
-	var cipher RSAOAEPPKCipher
+	var cipher RSAOAEPCipher
 	var err error
 
 	cipher.Algorithm = x.Algorithm()
@@ -74,7 +74,7 @@ func (x *rsaoaep_t) New(public PublicKey, private PrivateKey) (PKCipher, error) 
 // NewEncrypter wraps the given PublicKey as a PKCipher.
 func (x *rsaoaep_t) NewEncrypter(key PublicKey) (PKCipher, error) {
 
-	var cipher RSAOAEPPKCipher
+	var cipher RSAOAEPCipher
 	var err error
 
 	cipher.Algorithm = x.Algorithm()
@@ -92,7 +92,7 @@ func (x *rsaoaep_t) NewEncrypter(key PublicKey) (PKCipher, error) {
 // NewDecrypter wraps the given PrivateKey as a PKCipher.
 func (x *rsaoaep_t) NewDecrypter(key PrivateKey) (PKCipher, error) {
 
-	var cipher RSAOAEPPKCipher
+	var cipher RSAOAEPCipher
 	var err error
 
 	cipher.Algorithm = x.Algorithm()
@@ -107,14 +107,14 @@ func (x *rsaoaep_t) NewDecrypter(key PrivateKey) (PKCipher, error) {
 
 }
 
-type RSAOAEPPKCipher struct {
+type RSAOAEPCipher struct {
 	Algorithm string
 	Bits      int
 	Public    *rsa.PublicKey
 	Private   *rsa.PrivateKey
 }
 
-func (x *RSAOAEPPKCipher) PublicKey() PublicKey {
+func (x *RSAOAEPCipher) PublicKey() PublicKey {
 
 	bytelen := x.Bits / 8
 
@@ -131,7 +131,7 @@ func (x *RSAOAEPPKCipher) PublicKey() PublicKey {
 
 }
 
-func (x *RSAOAEPPKCipher) SetPublicKey(publickey PublicKey) error {
+func (x *RSAOAEPCipher) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != x.Algorithm {
 		return ErrAlgorithmMismatch
@@ -162,7 +162,7 @@ func (x *RSAOAEPPKCipher) SetPublicKey(publickey PublicKey) error {
 
 }
 
-func (x *RSAOAEPPKCipher) PrivateKey() PrivateKey {
+func (x *RSAOAEPCipher) PrivateKey() PrivateKey {
 
 	bytelen := x.Bits / 8
 
@@ -185,7 +185,7 @@ func (x *RSAOAEPPKCipher) PrivateKey() PrivateKey {
 
 }
 
-func (x *RSAOAEPPKCipher) SetPrivateKey(privatekey PrivateKey) error {
+func (x *RSAOAEPCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != x.Algorithm {
 		return ErrAlgorithmMismatch
@@ -251,7 +251,7 @@ func (x *RSAOAEPPKCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 }
 
-func (x *RSAOAEPPKCipher) Encrypt(data []byte) ([]byte, error) {
+func (x *RSAOAEPCipher) Encrypt(data []byte) ([]byte, error) {
 
 	if x.Public == nil {
 		return nil, ErrNotEncrypter
@@ -261,7 +261,7 @@ func (x *RSAOAEPPKCipher) Encrypt(data []byte) ([]byte, error) {
 
 }
 
-func (x *RSAOAEPPKCipher) Decrypt(data []byte) ([]byte, error) {
+func (x *RSAOAEPCipher) Decrypt(data []byte) ([]byte, error) {
 
 	if x.Private == nil {
 		return nil, ErrNotDecrypter
