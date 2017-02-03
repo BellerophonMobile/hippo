@@ -1,6 +1,7 @@
 package hippo
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -138,4 +139,56 @@ func Example_CertificateChain() {
 	fmt.Println("Verified")
 
 	// Output: Verified
+}
+
+// Example_Encrypt is a minimal demonstration of generating a key,
+// marshaling it to JSON, encrypting data with the unmarshalled key,
+// and then decrypting the data from the original key.
+func Example_Encrypt() {
+
+	data := []byte("Four score and seven years ago")
+
+	// Create a keypair
+	keys, err := GeneratePKCipher("rsa-oaep-2048")
+	if err != nil {
+		panic(err)
+	}
+
+	// Marshal the public key out to JSON
+	publicjson, err := json.Marshal(keys.PublicKey())
+	if err != nil {
+		panic(err)
+	}
+
+	// Read the public key back in
+	public := PublicKey{}
+	err = json.Unmarshal(publicjson, &public)
+	if err != nil {
+		panic(err)
+	}
+
+	encrypter, err := NewEncrypter(public)
+	if err != nil {
+		panic(err)
+	}
+
+	// Encrypt the data from the unmarshaled public key
+	ciphertext, err := encrypter.Encrypt(data)
+	if err != nil {
+		panic(err)
+	}
+
+	// Decrypt the data with the original private key
+	cleartext, err := keys.Decrypt(ciphertext)
+	if err != nil {
+		panic(err)
+	}
+
+	if bytes.Compare(cleartext, data) != 0 {
+		panic("Data mismatch!")
+	}
+
+	fmt.Println("Received")
+
+	// Output: Received
 }

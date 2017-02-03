@@ -19,7 +19,6 @@ func Test_RSA_JSON_Private(t *testing.T) {
 	test_pkcipher_json_private(t, AlgorithmRSA_OAEP_2048)
 }
 
-
 func Test_RSA_Bogus_Key(t *testing.T) {
 
 	data := []byte("Four score and seven years ago")
@@ -61,7 +60,7 @@ func Test_RSA_Bogus_Data(t *testing.T) {
 	cleartext, err := keys.Decrypt(ciphertext)
 	require.NotNil(t, err)
 	require.Nil(t, cleartext)
-	
+
 }
 
 func Test_RSA_WebCrypto_Out(t *testing.T) {

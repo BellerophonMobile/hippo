@@ -3,7 +3,7 @@ package hippo
 // SKCiphers encapsulate a secret key (symmetric) encryption
 // algorithm, parameterization, and an associated key.
 type SKCipher interface {
-	
+
 	// Key returns a JSON Base64-URL encoded marshaling of the
 	// SKCipher's secret key.
 	SecretKey() PrivateKey
@@ -11,7 +11,7 @@ type SKCipher interface {
 	// SetKey sets the SKCipher's secret key from the given PrivateKey
 	// containing JSON Base64-URL encoded data.
 	SetKey(key PrivateKey) error
-	
+
 	// Encrypt produces cipherdata for the given plaindata.
 	Encrypt(data []byte) ([]byte, error)
 
@@ -22,5 +22,4 @@ type SKCipher interface {
 	// mechanism is not as simple as signing either the plaindata or
 	// cipherdata alone.
 	Decrypt(data []byte) ([]byte, error)
-
 }

@@ -17,7 +17,6 @@ type SKCipherer interface {
 
 	// New wraps the given secret key as an SKCipher.
 	New(key PrivateKey) (SKCipher, error)
-
 }
 
 var skcipherers = make(map[string]SKCipherer)

@@ -37,7 +37,7 @@ func test_skcipher_json(t *testing.T, algorithm string) {
 	ciphertext, err := key.Encrypt(data)
 	require.Nil(t, err)
 	require.NotNil(t, ciphertext)
-	
+
 	privatejson, err := json.Marshal(key.SecretKey())
 	require.Nil(t, err)
 

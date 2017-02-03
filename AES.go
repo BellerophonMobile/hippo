@@ -9,6 +9,7 @@ import (
 	"fmt"
 )
 
+// AESMode captures the operational mode of the cipher.
 type AESMode int
 
 var modelabels = []string{
@@ -21,6 +22,8 @@ const (
 	GCM
 )
 
+// ErrUnsupportedMode is returned if a key is given that indicates a
+// mode with no registered implementation.
 var ErrUnsupportedMode = fmt.Errorf("Unknown mode")
 
 // AlgorithmAES_256_CBC is a constant string identifying the AES
@@ -38,7 +41,7 @@ func init() {
 		aes_t{bits: 256, mode: GCM},
 	}
 
-	for _,m := range(modes) {
+	for _, m := range modes {
 		err := RegisterSKCipherer(&m)
 		if err != nil {
 			panic(err)
@@ -96,6 +99,7 @@ func (x *aes_t) New(key PrivateKey) (SKCipher, error) {
 
 }
 
+// An AESCipher is an actionable secret key.
 type AESCipher struct {
 	Algorithm string
 	Bits      int
@@ -103,6 +107,8 @@ type AESCipher struct {
 	Key       []byte
 }
 
+// SecretKey returns a JSON Base64-URL encoded marshaling of the
+// cipher's secret key.
 func (x *AESCipher) SecretKey() PrivateKey {
 
 	key := PrivateKey{
@@ -114,6 +120,8 @@ func (x *AESCipher) SecretKey() PrivateKey {
 
 }
 
+// SetKey sets the cipher's secret key from the given PrivateKey
+// containing JSON Base64-URL encoded data.
 func (x *AESCipher) SetKey(key PrivateKey) error {
 
 	if key.Algorithm != x.Algorithm {
@@ -139,23 +147,24 @@ func (x *AESCipher) SetKey(key PrivateKey) error {
 
 }
 
+// Encrypt produces cipherdata for the given plaindata.
 func (x *AESCipher) Encrypt(data []byte) ([]byte, error) {
-	
+
 	block, err := aes.NewCipher(x.Key)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	switch x.Mode {
 	case CBC:
 		return encrypt_cbc(block, data)
 
 	case GCM:
-		return encrypt_gcm(block, data)		
+		return encrypt_gcm(block, data)
 	}
 
-	return nil,ErrUnsupportedMode
-	
+	return nil, ErrUnsupportedMode
+
 }
 
 func encrypt_cbc(block cipher.Block, data []byte) ([]byte, error) {
@@ -174,7 +183,7 @@ func encrypt_cbc(block cipher.Block, data []byte) ([]byte, error) {
 	mode.CryptBlocks(ciphertext[aes.BlockSize:], msg)
 
 	return ciphertext, nil
-	
+
 }
 
 func encrypt_gcm(block cipher.Block, data []byte) ([]byte, error) {
@@ -185,17 +194,20 @@ func encrypt_gcm(block cipher.Block, data []byte) ([]byte, error) {
 	}
 
 	nonce := make([]byte, mode.NonceSize(), mode.NonceSize()+len(data))
-	_,err = rand.Read(nonce)
+	_, err = rand.Read(nonce)
 	if err != nil {
 		return nil, err
 	}
 
 	ciphertext := mode.Seal(nonce, nonce, data, nil)
 
-	return ciphertext,nil
+	return ciphertext, nil
 
 }
 
+// Decrypt takes cipherdata and produces plaindata.  N.B. that
+// depending on the mode an invalid key or data may or may not
+// generate an error.
 func (x *AESCipher) Decrypt(data []byte) ([]byte, error) {
 
 	block, err := aes.NewCipher(x.Key)
@@ -208,10 +220,10 @@ func (x *AESCipher) Decrypt(data []byte) ([]byte, error) {
 		return decrypt_cbc(block, data)
 
 	case GCM:
-		return decrypt_gcm(block, data)		
+		return decrypt_gcm(block, data)
 	}
 
-	return nil,ErrUnsupportedMode
+	return nil, ErrUnsupportedMode
 
 }
 
@@ -248,7 +260,7 @@ func decrypt_gcm(block cipher.Block, data []byte) ([]byte, error) {
 	nonce := data[:mode.NonceSize()]
 	msg := data[mode.NonceSize():]
 
-	plaintext,err := mode.Open(nil, nonce, msg, nil)
+	plaintext, err := mode.Open(nil, nonce, msg, nil)
 	if err != nil {
 		return nil, err
 	}

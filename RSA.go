@@ -107,6 +107,8 @@ func (x *rsaoaep_t) NewDecrypter(key PrivateKey) (PKCipher, error) {
 
 }
 
+// An RSAOAEPCipher is an actionable RSA public/private key or a
+// matched pair.
 type RSAOAEPCipher struct {
 	Algorithm string
 	Bits      int
@@ -114,6 +116,8 @@ type RSAOAEPCipher struct {
 	Private   *rsa.PrivateKey
 }
 
+// PublicKey returns a JSON Base64-URL encoded marshaling of the
+// cipher's public key.
 func (x *RSAOAEPCipher) PublicKey() PublicKey {
 
 	bytelen := x.Bits / 8
@@ -131,6 +135,8 @@ func (x *RSAOAEPCipher) PublicKey() PublicKey {
 
 }
 
+// SetPublicKey sets the cipher's public key from the given PublicKey
+// containing JSON Base64-URL encoded data.
 func (x *RSAOAEPCipher) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != x.Algorithm {
@@ -162,6 +168,8 @@ func (x *RSAOAEPCipher) SetPublicKey(publickey PublicKey) error {
 
 }
 
+// PrivateKey returns a JSON Base64-URL encoded marshaling of the
+// cipher's private key.
 func (x *RSAOAEPCipher) PrivateKey() PrivateKey {
 
 	bytelen := x.Bits / 8
@@ -185,6 +193,8 @@ func (x *RSAOAEPCipher) PrivateKey() PrivateKey {
 
 }
 
+// SetPrivateKey sets the cipher's public key from the given
+// PrivateKey containing JSON Base64-URL encoded data.
 func (x *RSAOAEPCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != x.Algorithm {
@@ -251,6 +261,7 @@ func (x *RSAOAEPCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 }
 
+// Encrypt produces cipherdata for the given plaindata.
 func (x *RSAOAEPCipher) Encrypt(data []byte) ([]byte, error) {
 
 	if x.Public == nil {
@@ -261,6 +272,7 @@ func (x *RSAOAEPCipher) Encrypt(data []byte) ([]byte, error) {
 
 }
 
+// Decrypt takes cipherdata and produces plaindata.
 func (x *RSAOAEPCipher) Decrypt(data []byte) ([]byte, error) {
 
 	if x.Private == nil {

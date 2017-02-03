@@ -33,11 +33,11 @@ func PrivateKeyFromFile(fn string) (*PrivateKey, error) {
 	return &key, err
 }
 
-func (k PrivateKey) ToBytes() ([]byte,error) {
+func (k PrivateKey) ToBytes() ([]byte, error) {
 	return toBytes(k)
 }
 
-func PrivateKeyFromBytes(buf []byte) (*PrivateKey,error) {
+func PrivateKeyFromBytes(buf []byte) (*PrivateKey, error) {
 	var key PrivateKey
 	err := fromBytes(buf, &key)
 	return &key, err
