@@ -1,37 +1,42 @@
 # HippoCrypto <img src="https://raw.githubusercontent.com/BellerophonMobile/hippo/master/docs/hippocrypto.png" height="64" title="HippoCrypto" alt="Cartoon of a hippopotamus." />
 
-HippoCrypto wraps cryptography functions from Go stdlib and other
-packages, and provides a simple chained certificate.
+HippoCrypto wraps some cryptography functions from Go stdlib and other
+packages.  It also provides a minimal chained certificate.
 
 Why?
 
- * To have transparent algorithm selection and a uniform
-   signing/verification interface.
- * To have simple tokens that include certificate chains.
+ * Transparent algorithm selection and uniform interfaces.
+ * Simple tokens built on linked certificates.
  
 [![Build Status](https://travis-ci.org/BellerophonMobile/hippo.svg?branch=master)](https://travis-ci.org/BellerophonMobile/hippo?branch=master) [![GoDoc](https://godoc.org/github.com/BellerophonMobile/hippo?status.svg)](https://godoc.org/github.com/BellerophonMobile/hippo) 
 
-## Wrapper
+## Wrappers
 
-The core of HippoCrypto is a simple wrapper for cryptographically
-signing and verifying data.  The Go APIs for these tasks are a bit
-inconsistent in places, so Hippo smooths them over.  In doing so it
+The core of HippoCrypto are thin wrappers for basic cryptographic
+functions and common algorithms.  In particular, there are uniform
+interfaces for digital signatures as well as encryption.  The standard
+Go APIs for specific implementations of these tasks are generally all
+similar but not unified, so Hippo smooths them over.  In doing so it
 provides a very easy way for programs to transparently parameterize
 algorithm selection.
 
-The current focii and baked-in algorithms are ECDSA-P256 and Ed25519.
-Other algorithms and options for them can easily be incorporated
+Where possible, the wrappers' key serialization functions are designed
+to work with the [HTML5 WebCrypto JavaScript
+API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API).
+
+### Digital Signatures
+
+Currently included digital signatures algorithms are ECDSA-P256 and
+Ed25519.  Other algorithms and options can be easily incorporated
 though.  Please make a suggestion or pull request if you need
 something else, but your programs can also easily wrap and register
-other algorithms or parameterizations.  These two selections are just
-what us maintainers ([Bellerophon
-Mobile](https://bellerophonmobile.com/)) are using in our projects, so
-they got first attention.
+other algorithms outside the library.
 
-Notably, the ECDSA wrapper has been implemented to be readily
-compatible with exporting and importing keys to/from the [HTML5
-WebCrypto JavaScript
-API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API).
+### Encryption
+
+Hippo currently includes wrappers for 2048bit RSA OAEP and 256 bit AES
+CBC and GCM modes.  Again, other algorithms and parameters can be
+easily added to the library or as plug-ins from external code.
 
 ## Certificates
 
@@ -47,6 +52,10 @@ certificates](https://en.wikipedia.org/wiki/X.509), but much simpler
 and particularly easier to work with in a Web/JavaScript environment.
 
 ## Examples
+
+A few examples follow.
+
+### Signatures
 
 Here is a trivial example of generating a key, signing some data,
 marshaling a key to be shared, and then verifying the data from the
@@ -83,10 +92,64 @@ unmarshaled key:
 	fmt.Printf("Verified")
 ```
 
-This longer example shows a root CA generating a valid certificate for
-an intermediary CA, which generates a valid certificate for a
-secondary CA, which in turn generates a valid certificate for a user
-that is verified against a pool including the root CA:
+### Encryption
+
+This is a quick example of generating an RSA key, marshaling the
+public key to JSON, encrypting data with it, and then decrypting from
+the original key.
+
+```go
+	data := []byte("Four score and seven years ago")
+
+	// Create a keypair
+	keys, err := GeneratePKCipher("rsa-oaep-2048")
+	if err != nil {
+		panic(err)
+	}
+	
+	// Marshal the public key out to JSON
+	publicjson, err := json.Marshal(keys.PublicKey())
+	if err != nil {
+		panic(err)
+	}
+
+	// Read the public key back in
+	public := PublicKey{}
+	err = json.Unmarshal(publicjson, &public)
+	if err != nil {
+		panic(err)
+	}
+
+	encrypter, err := NewEncrypter(public)
+	if err != nil {
+		panic(err)
+	}
+
+	// Encrypt the data from the unmarshaled public key
+	ciphertext, err := encrypter.Encrypt(data)
+	if err != nil {
+		panic(err)
+	}
+
+	// Decrypt the data with the original private key
+	cleartext, err := keys.Decrypt(ciphertext)
+	if err != nil {
+		panic(err)
+	}
+
+	if bytes.Compare(cleartext, data) != 0 {
+		panic("Data mismatch!")
+	}
+
+	fmt.Println("Received")
+```
+
+### Certificates
+
+This example shows a root CA generating a valid certificate for an
+intermediary CA, which generates a valid certificate for a secondary
+CA, which in turn generates a valid certificate for a user that is
+verified against a pool including the root CA:
 
 ```go
 	// Create some keys
