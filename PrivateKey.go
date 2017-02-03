@@ -33,10 +33,12 @@ func PrivateKeyFromFile(fn string) (*PrivateKey, error) {
 	return &key, err
 }
 
+// ToBytes marshals the key to a byte array.
 func (k PrivateKey) ToBytes() ([]byte, error) {
 	return toBytes(k)
 }
 
+// PrivateKeyFromBytes unmarshals a key from the given byte array.
 func PrivateKeyFromBytes(buf []byte) (*PrivateKey, error) {
 	var key PrivateKey
 	err := fromBytes(buf, &key)

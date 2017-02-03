@@ -33,10 +33,12 @@ func PublicKeyFromFile(fn string) (*PublicKey, error) {
 	return &key, err
 }
 
+// ToBytes marshals the key to a byte array.
 func (k PublicKey) ToBytes() ([]byte, error) {
 	return toBytes(k)
 }
 
+// PublicKeyFromBytes unmarshals a key from the given byte array.
 func PublicKeyFromBytes(buf []byte) (*PublicKey, error) {
 	var key PublicKey
 	err := fromBytes(buf, &key)

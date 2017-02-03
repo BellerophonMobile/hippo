@@ -1,6 +1,6 @@
 package hippo
 
-// SKCiphers encapsulate a secret key (symmetric) encryption
+// An SKCipher encapsulates a secret key (symmetric) encryption
 // algorithm, parameterization, and an associated key.
 type SKCipher interface {
 

@@ -18,8 +18,8 @@ var modelabels = []string{
 }
 
 const (
-	CBC AESMode = iota
-	GCM
+	CBC AESMode = iota // Cipher block chaining mode.
+	GCM                // Galois/counter mode.
 )
 
 // ErrUnsupportedMode is returned if a key is given that indicates a

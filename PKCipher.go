@@ -40,7 +40,7 @@ type Decrypter interface {
 	Decrypt(data []byte) ([]byte, error)
 }
 
-// PKCiphers encapsulate a public key (asymmetric) encryption
+// A PKCipher encapsulates a public key (asymmetric) encryption
 // algorithm, parameterization, and matched keys to encrypt and
 // decrypt data.
 type PKCipher interface {
