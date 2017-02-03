@@ -1,13 +1,20 @@
 # HippoCrypto <img src="https://raw.githubusercontent.com/BellerophonMobile/hippo/master/docs/hippocrypto.png" height="64" title="HippoCrypto" alt="Cartoon of a hippopotamus." />
 
-HippoCrypto wraps some cryptography functions from Go stdlib and other
-packages.  It also provides a minimal chained certificate.
+HippoCrypto wraps basic cryptography functions for digital signatures
+and encryption from Go stdlib and other packages.  It also provides a
+minimal chained certificate.
 
 Why?
 
  * Transparent algorithm selection and uniform interfaces.
  * Simple tokens built on linked certificates.
- 
+
+Please remember that cryptography is complex!  There are many subtle
+issues.  Although this API aims to make these functions easy to use,
+you must still understand the implications and guarantees before doing
+so.  For example, not all of the encryption algorithms included here
+assure data integrity on their own, let alone authenticity.
+
 [![Build Status](https://travis-ci.org/BellerophonMobile/hippo.svg?branch=master)](https://travis-ci.org/BellerophonMobile/hippo?branch=master) [![GoDoc](https://godoc.org/github.com/BellerophonMobile/hippo?status.svg)](https://godoc.org/github.com/BellerophonMobile/hippo) 
 
 ## Wrappers
@@ -103,39 +110,27 @@ the original key.
 
 	// Create a keypair
 	keys, err := GeneratePKCipher("rsa-oaep-2048")
-	if err != nil {
-		panic(err)
-	}
-	
+	if err != nil { panic(err) }
+
 	// Marshal the public key out to JSON
 	publicjson, err := json.Marshal(keys.PublicKey())
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Read the public key back in
 	public := PublicKey{}
 	err = json.Unmarshal(publicjson, &public)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	encrypter, err := NewEncrypter(public)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Encrypt the data from the unmarshaled public key
 	ciphertext, err := encrypter.Encrypt(data)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Decrypt the data with the original private key
 	cleartext, err := keys.Decrypt(ciphertext)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	if bytes.Compare(cleartext, data) != 0 {
 		panic("Data mismatch!")

@@ -150,39 +150,27 @@ func Example_Encrypt() {
 
 	// Create a keypair
 	keys, err := GeneratePKCipher("rsa-oaep-2048")
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Marshal the public key out to JSON
 	publicjson, err := json.Marshal(keys.PublicKey())
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Read the public key back in
 	public := PublicKey{}
 	err = json.Unmarshal(publicjson, &public)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	encrypter, err := NewEncrypter(public)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Encrypt the data from the unmarshaled public key
 	ciphertext, err := encrypter.Encrypt(data)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	// Decrypt the data with the original private key
 	cleartext, err := keys.Decrypt(ciphertext)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	if bytes.Compare(cleartext, data) != 0 {
 		panic("Data mismatch!")
