@@ -3,7 +3,7 @@ go: tip
 
 install:
  - go get github.com/stretchr/testify/require
- - go get github.com/agl/ed25519
+ - go get golang.org/x/crypto/ed25519
  - go get github.com/BellerophonMobile/logberry
 
 script:
