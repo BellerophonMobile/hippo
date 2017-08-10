@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/agl/ed25519"
+	"golang.org/x/crypto/ed25519"
 )
 
 // AlgorithmEd25519 is a constant string identifying the ed25519 algorithm.
@@ -96,8 +96,8 @@ func (x *ed25519_t) NewSigner(key PrivateKey) (Credentials, error) {
 // Ed25519Credentials are an actionable Ed25519 public/private key or
 // matched pair.
 type Ed25519Credentials struct {
-	Private *[ed25519.PrivateKeySize]byte
-	Public  *[ed25519.PublicKeySize]byte
+	Private []byte
+	Public  []byte
 }
 
 // PublicKey returns a JSON Base64-URL encoded marshaling of the
@@ -133,9 +133,7 @@ func (x *Ed25519Credentials) SetPublicKey(publickey PublicKey) error {
 		return err
 	}
 
-	var key [ed25519.PublicKeySize]byte
-	copy(key[:], bytes)
-	x.Public = &key
+	x.Public = bytes
 
 	return nil
 
@@ -163,9 +161,7 @@ func (x *Ed25519Credentials) SetPrivateKey(privatekey PrivateKey) error {
 		return err
 	}
 
-	var key [ed25519.PrivateKeySize]byte
-	copy(key[:], bytes)
-	x.Private = &key
+	x.Private = bytes
 
 	return nil
 
@@ -210,10 +206,7 @@ func (x *Ed25519Credentials) Verify(data []byte, signature Signature) error {
 		return err
 	}
 
-	var sig [ed25519.SignatureSize]byte
-	copy(sig[:], bytes)
-
-	if !ed25519.Verify(x.Public, data, &sig) {
+	if !ed25519.Verify(x.Public, data, bytes) {
 		return ErrUnverifiedSignature
 	}
 
