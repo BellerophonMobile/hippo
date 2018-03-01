@@ -13,10 +13,6 @@ var ErrPreviousAlgorithm = fmt.Errorf("Previous algorithm registration")
 // keys from an unregistered algorithm.
 var ErrUnknownAlgorithm = fmt.Errorf("Unknown algorithm")
 
-// ErrAlgorithmMismatch is returned when generating Credentials or
-// Ciphers from a keypair with different algorithms specified.
-var ErrAlgorithmMismatch = fmt.Errorf("Algorithm mismatch")
-
 // A Credentialer encapsulates key generation for a specific digital
 // signature algorithm and parameterization.
 type Credentialer interface {
@@ -80,7 +76,7 @@ func GenerateCredentials(algorithm string) (Credentials, error) {
 func NewCredentials(public PublicKey, private PrivateKey) (Credentials, error) {
 
 	if public.Algorithm != private.Algorithm {
-		return nil, ErrAlgorithmMismatch
+		return nil, fmt.Errorf("Algorithm mismatch %v vs %v", public.Algorithm, private.Algorithm)
 	}
 
 	credentialersmutex.Lock()

@@ -140,7 +140,7 @@ func (x *RSAOAEPCipher) PublicKey() PublicKey {
 func (x *RSAOAEPCipher) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != x.Algorithm {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", publickey.Algorithm, x.Algorithm)
 	}
 
 	bytelen := x.Bits / 8
@@ -198,7 +198,7 @@ func (x *RSAOAEPCipher) PrivateKey() PrivateKey {
 func (x *RSAOAEPCipher) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != x.Algorithm {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", privatekey.Algorithm, x.Algorithm)
 	}
 
 	bytelen := x.Bits / 8

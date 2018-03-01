@@ -116,7 +116,7 @@ func (x *Ed25519Credentials) PublicKey() PublicKey {
 func (x *Ed25519Credentials) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != AlgorithmEd25519 {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", publickey.Algorithm, AlgorithmEd25519)
 	}
 
 	st, ok := publickey.Public.(string)
@@ -144,7 +144,7 @@ func (x *Ed25519Credentials) SetPublicKey(publickey PublicKey) error {
 func (x *Ed25519Credentials) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != AlgorithmEd25519 {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", privatekey.Algorithm, AlgorithmEd25519)
 	}
 
 	st, ok := privatekey.Private.(string)

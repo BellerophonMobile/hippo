@@ -158,7 +158,7 @@ func (x *ECDSACredentials) PublicKey() PublicKey {
 func (x *ECDSACredentials) SetPublicKey(publickey PublicKey) error {
 
 	if publickey.Algorithm != x.Algorithm {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", publickey.Algorithm, x.Algorithm)
 	}
 
 	bitlen := x.Curve.Params().BitSize / 8
@@ -256,7 +256,7 @@ func (x *ECDSACredentials) PrivateKey() PrivateKey {
 func (x *ECDSACredentials) SetPrivateKey(privatekey PrivateKey) error {
 
 	if privatekey.Algorithm != x.Algorithm {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", privatekey.Algorithm, x.Algorithm)
 	}
 
 	bitlen := x.Curve.Params().BitSize / 8

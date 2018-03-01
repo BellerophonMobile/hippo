@@ -41,8 +41,8 @@ func init() {
 		aes_t{bits: 256, mode: GCM},
 	}
 
-	for _, m := range modes {
-		err := RegisterSKCipherer(&m)
+	for i := range modes {
+		err := RegisterSKCipherer(&modes[i])
 		if err != nil {
 			panic(err)
 		}
@@ -125,7 +125,7 @@ func (x *AESCipher) SecretKey() PrivateKey {
 func (x *AESCipher) SetKey(key PrivateKey) error {
 
 	if key.Algorithm != x.Algorithm {
-		return ErrAlgorithmMismatch
+		return fmt.Errorf("Algorithm mismatch %v vs %v", key.Algorithm, x.Algorithm)
 	}
 
 	keydata, ok := key.Private.(string)
@@ -140,7 +140,7 @@ func (x *AESCipher) SetKey(key PrivateKey) error {
 	}
 
 	if len(x.Key) != x.Bits/8 {
-		return fmt.Errorf("Not enough key bits")
+		return fmt.Errorf("Incorrect key bits")
 	}
 
 	return nil

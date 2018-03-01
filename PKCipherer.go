@@ -1,6 +1,7 @@
 package hippo
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -67,7 +68,7 @@ func GeneratePKCipher(algorithm string) (PKCipher, error) {
 func NewPKCipher(public PublicKey, private PrivateKey) (PKCipher, error) {
 
 	if public.Algorithm != private.Algorithm {
-		return nil, ErrAlgorithmMismatch
+		return nil, fmt.Errorf("Algorithm mismatch %v vs %v", public.Algorithm, private.Algorithm)
 	}
 
 	pkcipherersmutex.Lock()
